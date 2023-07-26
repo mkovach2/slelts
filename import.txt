@@ -1,0 +1,41 @@
+import sys
+sys.path.append('C:/Users/mkovach/Documents/Pfuncs')
+
+if this doesnt work:
+https://stackoverflow.com/questions/3402168/permanently-add-a-directory-to-pythonpath?rq=1
+43
+
+This works on Windows
+
+On Windows, with Python 2.7 go to the Python setup folder.
+Open Lib/site-packages.
+Add an example.pth empty file to this folder.
+Add the required path to the file, one per each line.
+Then you'll be able to see all modules within those paths from your scripts.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+exec from python command line:
+
+exec(open(r'C:\Users\mkovach\Documents\cummins\processing.py').read()) 
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+dont wanna fiddle with the path? yeah i dont blame you. try this!
+
+priorWd = os.getcwd() # saves current directory, to return there later
+os.chdir(userPath + "HyperLight Corporation/HyperLight General - General/" + \
+         "miles/pyScripts/") # sends you to your userPath plus the location of the folder containing goodToHave
+from goodToHave import tryUntilGood # you know this one
+os.chdir(priorWd) # returns you to your prior directory
+
+
+How to import file from abs. path
+import sys
+funcPath_conf = "C:/Users/miles/Documents/V_pi/conf_funcs.py"
+
+# importing configuration functions.  Specify the location of yours here:
+sys.path.append(funcPath_conf.rpartition('/')[0])
+funcFile = (funcPath_conf.rpartition('/')[2])
+funcFile = (funcFile.strip('\n'))[:-3]
+fc = __import__(funcFile)

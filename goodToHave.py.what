@@ -1,0 +1,41 @@
+'''
+goodToHave.py
+no project
+Author: miles @ hyperlightcorp.com
+Created: 2022-06-01
+Modified: 2022-06-01  miles @ hyperlightcorp.com
+
+functions that are good to have in general
+
+1--------10--------20--------30--------40--------50--------60--------70--------
+'''
+
+def tryUntilGood(dirTo, attemptFile):
+  # this file takes a containing directory and a filename,
+  # and if a file with that name exists within the directory
+  # this function will append a number.  The process will repeat until
+  # a new filename is generated.  This filename is returned as a string.
+  
+  from os import listdir
+  
+  attemptFileA = attemptFile.rpartition('.')[0]
+  aFtype = attemptFile.rpartition('.')[2]
+  attemptFileB = attemptFileA
+  suffix = ''
+  if attemptFile in listdir(dirTo):
+    suffix = 0
+    attemptFileB = attemptFileA + str(suffix)
+  while attemptFileA + str(suffix) + '.' + aFtype in listdir(dirTo):
+    suffix += 1
+    attemptFileB = attemptFileA + str(suffix)
+    if 0: # debugging_if
+      print("attemptFileB\t" + attemptFileB)
+  return dirTo + attemptFileB + '.' + aFtype
+
+def fixWin(inAddr):
+  
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~main~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+if __name__ == "__main__":
+  # put main here
+  0

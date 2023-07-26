@@ -1,0 +1,10 @@
+*.zbf
+*.ldf
+*_rawData.txt
+*_matData.txt
+*_lumDat.txt
+*.png
+*.lnk
+/modeToPic/copy_of_UHNA3_20220518_dont_use/
+*__pycache__/
+_misc_ignore/
