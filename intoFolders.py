@@ -17,8 +17,11 @@ import re
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~main~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 if __name__ == "__main__":
   
+  print_new_names = True
+  actually_move = True
+  
   # inD = "T:/Device Components/Segmented CPW/e/"
-  inD = "T:/Device Components/Segmented CPW/reduced_100_10min/"
+  inD = "T:/Device Components/Mode Converter/20230913_layer_to_layer/doe_part_2/"
   
   fileList = os.scandir(inD)
   folders = []
@@ -34,11 +37,14 @@ if __name__ == "__main__":
   #end for anItem in fileList
   
   for file in files:
-    hasUid = re.match('[\d]{5}',file.name)
+    hasUid = re.match('[\d]{3}',file.name)
     if hasUid:
       if hasUid.group(0) in folders:
         print("moving " + file.name)
-        os.rename(inD + file.name, inD + hasUid.group(0) + '/' + file.name)
+        if print_new_names:
+            print(inD + file.name, inD + hasUid.group(0) + '/' + file.name)
+        if actually_move:
+            os.rename(inD + file.name, inD + hasUid.group(0) + '/' + file.name)
     #end if hasUid
   #end for folder in folders
   
