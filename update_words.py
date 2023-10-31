@@ -21,12 +21,12 @@ import csv
 
 use_prompts = 0
 in_reverse = 0 # swaps columns
-original = "C:/Users/miles.HYPERLIGHT/HyperLight Corporation/Products - General/+NewFileSystem/Device Components/Mode Converter/20230322_MC_EME_DOE/mc_measurement_DoE.py"
+original = "C:/Users/miles.HYPERLIGHT/Documents/_git_repos/HyperLightPDK/hl_foundry_gen1/hl_foundry_gen1/pcells/rf/gssg3.py"
 # original = "T:/Device Components/Mode Converter/20230322_MC_EME_DOE/TE_screen_20230515/gamer_doc.txt"
 # original = "T:/Device Components/Mode Converter/20230322_MC_EME_DOE/TE_screen_20230515/verification_for_speed/speed_11.csv"
 # original = "T:/Device Components/Mode Converter/20230322_MC_EME_DOE/EME_univ_mk_20230509.lsf"
 # original = "C:/Users/miles.HYPERLIGHT/Documents/_git_repos/eme_sweep-py/EME_univ_mk_20230506.lsf"
-keys_csv = "C:/Users/miles.HYPERLIGHT/Desktop/test_table_2.csv"
+keys_csv = "C:/Users/miles.HYPERLIGHT/Desktop/sgOOT.csv"
 # keys_csv = "C:/Users/miles.HYPERLIGHT/Desktop/test_table.csv"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

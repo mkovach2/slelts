@@ -21,7 +21,7 @@ if __name__ == "__main__":
   actually_move = True
   
   # inD = "T:/Device Components/Segmented CPW/e/"
-  inD = "T:/Device Components/Mode Converter/20230913_layer_to_layer/doe_part_2/"
+  inD = "T:/Device Components/Mode Converter/20230913_layer_to_layer/doe/"
   
   fileList = os.scandir(inD)
   folders = []
