@@ -34,7 +34,11 @@ try:
             texte_nn = texte_nn.replace('\\(','(')
             texte_nn = texte_nn.replace('\\)',')')
             texte_nn = texte_nn.replace('\\*','*')
-            print(f'\"{texte_nn},')
+            
+            if texte_nn[-1] != ',':
+                texte_nn += ','
+            
+            print(f'\"{texte_nn}')
 
 except Exception as ploop:
     print("FACK! uh oh!  u got:\t\t{}".format(ploop))
