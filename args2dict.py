@@ -40,7 +40,7 @@ while again.lower() == 'y':
                 if texte_nn[-1] != ',':
                     texte_nn += ','
                 
-                print(f'\"{texte_nn}')
+                print(f'\"{texte_nn.strip()}')
     
     except Exception as ploop:
         print("FACK! uh oh!  u got:\t\t{}".format(ploop))
