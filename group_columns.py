@@ -15,6 +15,7 @@ import pandas as pd
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
+win_cmd = True
 save_outputs = True
 
 load_dir = 'C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/'+\
@@ -30,6 +31,10 @@ save_dir = load_dir
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~main~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 if __name__ == "__main__":
+    
+    if win_cmd:
+        load_dir = input('input directory containing CSVs\n')
+        save_dir = load_dir
     
     df_dict = {}
     column_list = []
@@ -69,5 +74,8 @@ if __name__ == "__main__":
                 col_df_dict[col_name].to_csv(f'{save_dir}/grouped/{col_name}.csv')
         solo_columns.to_csv(f'{save_dir}/grouped/solo_columns.csv')
     
+    
+    if win_cmd:
+        input('\ndone.  press [enter] to continue.\n')
     
 #end if __name__ == "__main__"
