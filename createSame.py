@@ -25,9 +25,10 @@ if __name__ == "__main__":
   
   # os.chdir(sourceD)
   for folder in os.listdir(sourceD):
-    if os.path.isdir(sourceD + '/' + folder):
-      # print(destD + '/' + folder)
-      os.mkdir(destD + '/' + folder)
+    if os.path.isdir(sourceD + '/' + folder) and\
+        not(os.path.isdir(destD + '/' + folder)):
+            # print(destD + '/' + folder)
+            os.mkdir(destD + '/' + folder)
     #end if os.path.isdir(folder)
   #end for folder in os.listdir(sourceD)
   
