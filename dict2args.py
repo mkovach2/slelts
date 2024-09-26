@@ -4,7 +4,7 @@ again = 'y'
 
 step1 = r'[\"\']\s?:\s?'
 repl1 = r' = '
-step2 = r'\s+[\'\"]?'
+step2 = r'\s{0,}[\'\"]?'
 repl2 = r''
 
 while again.lower() == 'y':
@@ -31,7 +31,7 @@ while again.lower() == 'y':
         for texte_nn in texte:
             if texte_nn != '':
                 texte_nn = re.sub(step1,repl1,texte_nn,count = 1)
-                texte_nn = re.sub(step2,repl2,texte_nn)
+                texte_nn = re.sub(step2,repl2,texte_nn,count = 1)
                 texte_nn = texte_nn.replace('\\(','(')
                 texte_nn = texte_nn.replace('\\)',')')
                 texte_nn = texte_nn.replace('\\*','*')

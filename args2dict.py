@@ -48,7 +48,7 @@ while again.lower() == 'y':
     done = 0
     again = input('again (y/N)?\t')
 
-
+input("\ndone.  press [enter] to close.\n_")
 
 #   regex backups:
     # step1 = r'(:[\s\w]+)?\s?=\s?'
