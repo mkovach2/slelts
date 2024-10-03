@@ -28,6 +28,7 @@ loud_mode = True
 def zip_ext(
         in_dir: str,
         extension: str = 'txt',
+        compresslevel: int = 9, # 0 = minimum compression, 9 = maximum compression
         loud_mode: bool = True
 ):
     in_dir = os.path.abspath(in_dir.strip('\"'))
@@ -64,7 +65,8 @@ def zip_ext(
             archive.write(
                 filename = os.path.join(os.path.abspath(in_dir), compress_name),
                 arcname = compress_name,
-                compress_type = zipfile.ZIP_DEFLATED
+                compress_type = zipfile.ZIP_DEFLATED,
+                compresslevel = compresslevel
             )
             
             num_done += 1
@@ -90,7 +92,11 @@ if __name__ == "__main__":
     
     zip_ext(
         in_dir = in_dir,
-        extension = extension
+        extension = extension,
+        compresslevel = 5,
+        loud_mode = True
     )
+    
+    input("\nEnter to quit.")
     
 #end if __name__ == "__main__"
