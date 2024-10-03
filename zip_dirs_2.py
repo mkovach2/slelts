@@ -124,16 +124,16 @@ def zip_dirs(
                         ncr.write(outstr.replace('\\\\','/'))
                 
                 num_done_here += 1
-        
-        if os.path.isfile(not_compressed_record):
-            archive_dict = {
-                "filename" : os.path.abspath(not_compressed_record),
-                "arcname" : os.path.relpath(not_compressed_record, start = subdir_as_path),
-                "compress_type" : zipfile.ZIP_DEFLATED,
-                "compresslevel" : compresslevel,
-            }
             
-            archive.write(**archive_dict)
+            if os.path.isfile(not_compressed_record):
+                archive_dict = {
+                    "filename" : os.path.abspath(not_compressed_record),
+                    "arcname" : os.path.relpath(not_compressed_record, start = subdir_as_path),
+                    "compress_type" : zipfile.ZIP_DEFLATED,
+                    "compresslevel" : compresslevel,
+                }
+                
+                archive.write(**archive_dict)
         
         num_done += 1
         
