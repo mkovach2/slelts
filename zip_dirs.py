@@ -81,9 +81,8 @@ def zip_dirs(
             print(exx)
             if logging:
                 with open(os.path.join(in_dir, "zip_dirs_log.txt"), 'a') as log:
-                    log.write(f'{exx}\n')
-                    
                     tbo = exx.__traceback__
+                    log.write(f'{exx}: line {tbo.tb_lineno}\n')
                     for ii in range(4):
                         log.write(f'{tbo.tb_frame.f_back}\n')
                         tbo = tbo.tb_next
