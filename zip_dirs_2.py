@@ -110,7 +110,7 @@ def zip_dirs(
                         outstr += "win_attr,"
                         outstr += ','.join(archive_dict.keys()) + '\n'
                     
-                    print(f"outstr = {outstr}")
+                    # print(f"outstr = {outstr}")
                     
                     winstat_str = hex(os.stat(archive_dict['filename']).st_file_attributes).split('x')[-1]
                     if len(winstat_str) < 8:
