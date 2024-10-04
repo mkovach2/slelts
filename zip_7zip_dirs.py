@@ -235,7 +235,7 @@ if __name__ == "__main__":
             print(f"code = {shawty.tb_frame.f_code}")
             shawty = shawty.tb_next
     
-    if win_cmd or False:
+    if win_cmd and False:
         input('Done.  Press [enter] to close.')
     
     
