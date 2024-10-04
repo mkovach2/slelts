@@ -76,7 +76,11 @@ def zip_dirs(
         done_in_glob = 0
         perc_last = 0
         
-        with py7zr.SevenZipFile(out_file_path, 'w') as archive:
+        with py7zr.SevenZipFile(
+                file = out_file_path,
+                mode = 'w',
+                filters = [{"id": py7zr.FILTER_LZMA, "preset": compresslevel},]
+        ) as archive:
             
             print("finding files...\n")
             
@@ -90,7 +94,6 @@ def zip_dirs(
                 archive_dict = {
                     "file" : os.path.abspath(pathe),
                     "arcname" : os.path.relpath(pathe, start = subdir_as_path),
-                    "filters" : {"preset": compresslevel},
                 }
                 
                 winstat_str = hex(os.stat(archive_dict['file']).st_file_attributes).split('x')[-1]
@@ -121,9 +124,15 @@ def zip_dirs(
                         outstr = '\n'
                     else:
                         opentype = 'w'
+                        
+                        try:
+                            thiscode = __file__
+                        except:
+                            thiscode = "the code that generated this file, \"zip_7zip_dirs.py\""
+                        
                         outstr = "note the following references:\n"+\
-                            "https://docs.python.org/3/library/zipfile.html#zipfile.ZipFile.write,"+\
-                            "for columns 1 thru 4\n"+\
+                            f"{thiscode}\n"+\
+                            "for columns 1 thru 3\n"+\
                             "https://docs.python.org/3/library/os.html#os.stat_result,"+\
                             "for info about getting the windows file attributes\n"+\
                             "https://learn.microsoft.com/en-us/windows/win32/fileio/file-attribute-constants,"+\
@@ -182,10 +191,8 @@ def zip_dirs(
             if os.path.isfile(not_compressed_record):
                 csv_arc = os.path.join(subdir_as_path, nc_csv)
                 archive_dict = {
-                    "filename" : os.path.abspath(not_compressed_record),
-                    "arcname" :  os.path.relpath(csv_arc, start = subdir_as_path),
-                    "compress_type" : zipfile.ZIP_DEFLATED,
-                    "compresslevel" : compresslevel,
+                    "file" : os.path.abspath(not_compressed_record),
+                    "arcname" : os.path.relpath(csv_arc, start = subdir_as_path),
                 }
                 
                 archive.write(**archive_dict)
@@ -224,18 +231,20 @@ if __name__ == "__main__":
     if win_cmd:
         in_dir = input("directory to look in?\n_")
     
-    try:
+        try:
+            parp = zip_dirs(in_dir = in_dir, logging = False, loud_mode = False)
+        except Exception as eee:
+            print(eee)
+            shawty = eee.__traceback__
+            
+            while not(shawty is None):
+                print(f"line = {shawty.tb_lineno}")
+                print(f"code = {shawty.tb_frame.f_code}")
+                shawty = shawty.tb_next
+    else:
         parp = zip_dirs(in_dir = in_dir, logging = False, loud_mode = False)
-    except Exception as eee:
-        print(eee)
-        shawty = eee.__traceback__
-        
-        while not(shawty is None):
-            print(f"line = {shawty.tb_lineno}")
-            print(f"code = {shawty.tb_frame.f_code}")
-            shawty = shawty.tb_next
     
-    if win_cmd and False:
+    if win_cmd:
         input('Done.  Press [enter] to close.')
     
     
