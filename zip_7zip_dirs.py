@@ -19,7 +19,7 @@ import os
 #     "onedrtibe BARP!/HyperLight General - General/Simulations/"+\
 #     "Lumerical_Miles/modeConverter/tenMillionDollars"
 
-win_cmd = False
+win_cmd = True
 
 in_dir = "C:/Users/miles.HYPERLIGHT/old onedrive/test_compress"
 # in_dir = "C:/Users/miles.HYPERLIGHT/old onedrive/od/OneDrive - HyperLight Corporation"
@@ -139,7 +139,7 @@ def zip_dirs(
                             "for the meanings of different windows file attributes."+\
                             "specifically of note:\n"+\
                             "0x 0040 0000,signifies the item \"fully present locally\"\n"+\
-                            "0x 0000 0020,signifies it is \"an archive file or directory\"\n"
+                            "0x 0000 0020,signifies it is \"an archive-file or directory\"\n"
                             
                         outstr += "win_attr,"
                         outstr += ','.join(archive_dict.keys()) + '\n'
