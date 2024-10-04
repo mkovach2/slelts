@@ -11,6 +11,7 @@
 import py7zr
 import pathlib
 import os
+import time
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -87,6 +88,8 @@ def zip_dirs(
             glob_len = len(list(subdir_as_path.rglob("*")))
             
             print(f"files found = {glob_len}")
+            print("starting...")
+            time_of_last_msg = int(time.time())
             
             for pathe in subdir_as_path.rglob("*"):
                 add_to_uncompressed = False
@@ -181,12 +184,16 @@ def zip_dirs(
                 
                 if big_condition:
                     print(f"{compress_name}: Done.\n")
+                    time_of_last_msg = int(time.time())
                 elif small_condition:
                     prog_str =\
                         f'{compress_name}: finished ({perc:.2f}%)'
-                    
                     print(prog_str)
+                    time_of_last_msg = int(time.time())
                     perc_last = perc
+                elif int(time.time()) - time_of_last_msg > 60:
+                    print('...')
+                    time_of_last_msg = int(time.time())
                     
             if os.path.isfile(not_compressed_record):
                 csv_arc = os.path.join(subdir_as_path, nc_csv)
