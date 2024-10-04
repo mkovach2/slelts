@@ -8,7 +8,7 @@
 # -------10--------20--------30--------40--------50--------60--------70--------
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-import zipfile
+import py7zr
 import pathlib
 import os
 
@@ -67,7 +67,7 @@ def zip_dirs(
         deletion_paths = []
         
         subdir_name = os.path.join(os.path.abspath(in_dir), compress_name)
-        out_file_path = subdir_name + '.zip'
+        out_file_path = subdir_name + '.7z'
         subdir_as_path = pathlib.Path(subdir_name)
         nc_csv = "not_compressed.csv"
         not_compressed_record = os.path.join(in_dir, nc_csv)
@@ -76,7 +76,7 @@ def zip_dirs(
         done_in_glob = 0
         perc_last = 0
         
-        with zipfile.ZipFile(out_file_path, mode="w") as archive:
+        with py7zr.SevenZipFile(out_file_path, 'w') as archive:
             
             print("finding files...\n")
             
@@ -88,13 +88,12 @@ def zip_dirs(
                 add_to_uncompressed = False
                 
                 archive_dict = {
-                    "filename" : os.path.abspath(pathe),
+                    "file" : os.path.abspath(pathe),
                     "arcname" : os.path.relpath(pathe, start = subdir_as_path),
-                    "compress_type" : zipfile.ZIP_DEFLATED,
-                    "compresslevel" : compresslevel,
+                    "filters" : {"preset": compresslevel},
                 }
                 
-                winstat_str = hex(os.stat(archive_dict['filename']).st_file_attributes).split('x')[-1]
+                winstat_str = hex(os.stat(archive_dict['file']).st_file_attributes).split('x')[-1]
                 if len(winstat_str) < 8:
                     winstat_str = winstat_str.zfill(8)
                     
@@ -138,7 +137,7 @@ def zip_dirs(
                     
                     # print(f"outstr = {outstr}")
                     
-                    winstat_str = hex(os.stat(archive_dict['filename']).st_file_attributes).split('x')[-1]
+                    winstat_str = hex(os.stat(archive_dict['file']).st_file_attributes).split('x')[-1]
                     if len(winstat_str) < 8:
                         winstat_str = winstat_str.zfill(8)
                     winstat_str = f'{winstat_str[:4]} {winstat_str[4:]},'
@@ -159,8 +158,8 @@ def zip_dirs(
                     with open(not_compressed_record, opentype) as ncr:
                         ncr.write(new_outstr)
                 
-                elif os.path.isfile(archive_dict['filename']):
-                    deletion_paths.append(archive_dict['filename'])
+                elif os.path.isfile(archive_dict['file']):
+                    deletion_paths.append(archive_dict['file'])
                     
                 perc = 100 * done_in_glob / glob_len
                 
@@ -236,7 +235,8 @@ if __name__ == "__main__":
             print(f"code = {shawty.tb_frame.f_code}")
             shawty = shawty.tb_next
     
-    input('Done.  Press [enter] to close.')
+    if win_cmd or False:
+        input('Done.  Press [enter] to close.')
     
     
     
