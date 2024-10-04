@@ -21,7 +21,8 @@ import os
 
 win_cmd = False
 
-in_dir = "C:/Users/miles.HYPERLIGHT/old onedrive/od/OneDrive - HyperLight Corporation"
+in_dir = "C:/Users/miles.HYPERLIGHT/old onedrive/test_compress"
+# in_dir = "C:/Users/miles.HYPERLIGHT/old onedrive/od/OneDrive - HyperLight Corporation"
 # in_dir = "C:/Users/miles.HYPERLIGHT/old onedrive/od/test_buppin"
 loud_mode = True
 
