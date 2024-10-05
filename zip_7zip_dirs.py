@@ -187,7 +187,7 @@ def zip_dirs(
                     time_of_last_msg = int(time.time())
                 elif small_condition or int(time.time()) - time_of_last_msg > 60:
                     prog_str =\
-                        f'{compress_name}: finished ({perc:.2f}%)'
+                        f'{compress_name}: finished {done_in_glob} of {glob_len} ({perc:.2f}%)'
                     print(prog_str)
                     time_of_last_msg = int(time.time())
                     perc_last = perc
