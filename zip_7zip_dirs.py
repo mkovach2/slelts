@@ -43,6 +43,7 @@ def zip_dirs(
         compresslevel: int = 9, # 0 = minimum compression, 9 = maximum compression
         loud_mode: bool = True,
         logging: bool = True,
+        prompt_before_delete: bool = True,
 ):
     in_dir = os.path.abspath(in_dir.strip('\"'))
     
@@ -56,7 +57,7 @@ def zip_dirs(
         print(f"file = {os.path.join(in_dir, infilename)}")
         print(os.path.splitext(infilename)[-1].lower())
         if os.path.isdir(os.path.join(in_dir, infilename)) and\
-        os.path.splitext(infilename)[-1].lower() != '.zip':
+        not(os.path.splitext(infilename)[-1].lower() in ('.zip', '.7z')):
             compress_list.append(infilename)
     
     print(f'Done getting subdirectories from\n{in_dir}.\n')
@@ -77,9 +78,14 @@ def zip_dirs(
         done_in_glob = 0
         perc_last = 0
         
+        if os.path.exists(out_file_path):
+            writemode_7z = 'a'
+        else:
+            writemode_7z = 'w'
+        
         with py7zr.SevenZipFile(
                 file = out_file_path,
-                mode = 'w',
+                mode = writemode_7z,
                 filters = [{"id": py7zr.FILTER_LZMA, "preset": compresslevel},]
         ) as archive:
             
@@ -212,9 +218,13 @@ def zip_dirs(
                     print(item)
                     dt.write(item + '\n')
             
-            yslashn = input(
-                f"\ndelete these items\n(see {del_record})? (y/N)\n_"
-            )
+            if prompt_before_delete:
+                yslashn = input(
+                    f"\ndelete these items\n(see {del_record})? (y/N)\n_"
+                )
+            else:
+                yslashn = 'y'
+            
             if yslashn.lower() == 'y':
                 for item in deletion_paths:
                     try:
@@ -236,7 +246,12 @@ if __name__ == "__main__":
         in_dir = input("directory to look in?\n_")
     
         try:
-            parp = zip_dirs(in_dir = in_dir, logging = False, loud_mode = False)
+            parp = zip_dirs(
+                in_dir = in_dir,
+                logging = False,
+                loud_mode = False,
+                prompt_before_delete = False
+            )
         except Exception as eee:
             print(eee)
             shawty = eee.__traceback__
