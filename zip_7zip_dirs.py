@@ -78,14 +78,29 @@ def zip_dirs(
         done_in_glob = 0
         perc_last = 0
         
-        if os.path.exists(out_file_path):
-            writemode_7z = 'a'
-        else:
-            writemode_7z = 'w'
+        ofpnum = None
+        while os.path.exists(out_file_path):
+            try:
+                ofpnum = int(out_file_path.rpartition('.')[-2:])
+            except:
+                ofpnum = 00
+            
+            ofpstr = str(ofpnum)
+            if ofpnum < 10:
+                ofpstr = '0' + ofpstr
+            
+            out_file_path = f"{subdir_name}_{ofpstr}.7z"
+            
+        imdumbstr = "oop!  I'm dumb.  I cant figure out how to use the "+\
+            "\"append\" functionality of py7zr.  creating archive called:\n"+\
+            out_file_path + "\n"
+        
+        if not(ofpnum is None):
+            print(imdumbstr)
         
         with py7zr.SevenZipFile(
                 file = out_file_path,
-                mode = writemode_7z,
+                mode = 'w',
                 filters = [{"id": py7zr.FILTER_LZMA, "preset": compresslevel},]
         ) as archive:
             
