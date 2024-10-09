@@ -345,17 +345,17 @@ def log_if(enable = True, logfile = 'log.txt', str_in = ''):
 if __name__ == "__main__":
     
     if win_cmd:
-        # in_dir = input("directory to look in?\n_")
-        in_dir = "T:/uh_oh/pleeelp"
+        in_dir = input("directory to look in?\n_")
+        # in_dir = "T:/uh_oh/pleeelp"
         
         exlist_str = "enter a directory to exclude, or press [Enter] "
         exclude_list = []
-        # exitem = input(exlist_str + f"to include all files in\n{in_dir}.\n_")
-        # while not(len(exitem) == 0):
-        #     exclude_list.append(exitem)
-        #     exitem = input(exlist_str + f"if done adding items.\n_")
+        exitem = input(exlist_str + f"to include all files in\n{in_dir}.\n_")
+        while not(len(exitem) == 0):
+            exclude_list.append(exitem)
+            exitem = input(exlist_str + f"if done adding items.\n_")
         
-        # print(exclude_list)
+        print(exclude_list)
     
         try:
             parp = zip_dirs(
