@@ -71,13 +71,17 @@ def zip_dirs(
     print(f'Done getting subdirectories from\n{in_dir}.\n')
     # print(compress_list)
     
+    if len(compress_list) == 0:
+        compress_list = [in_dir,]
+        in_dir = os.path.abspath(in_dir + '/..')
+    
     num_errs = 0
     num_done_here = 0
     for compress_name in compress_list:
         
         deletion_paths = []
         
-        subdir_name = os.path.join(os.path.abspath(in_dir), compress_name)
+        subdir_name = os.path.join(in_dir, compress_name)
         out_file_path = subdir_name + '.7z'
         subdir_as_path = pathlib.Path(subdir_name)
         nc_csv = "not_compressed.csv"
@@ -294,7 +298,9 @@ def zip_dirs(
                         try:
                             os.remove(item)
                         except:
-                            print(f"couldnt delete {item}.\n")
+                            couldnt_str = f"couldnt delete {item}.\n"
+                            print(couldnt_str)
+                            log_if(logging, logfile = logfile, str_in = couldnt_str)
                 else:
                     print("none deleted.\n")
                     log_if(logging, logfile = logfile, str_in = f"none deleted from {compress_name}\n")
