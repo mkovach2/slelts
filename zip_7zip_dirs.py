@@ -46,6 +46,7 @@ def zip_dirs(
         prompts_on: bool = False,
         prompt_before_delete: bool|None = None,
         exclude_list: list = [],
+        as_a_unit: bool = False,
 ):
     in_dir = os.path.abspath(in_dir.strip('\"'))
     logfile = os.path.join(in_dir, "log.txt")
@@ -71,7 +72,7 @@ def zip_dirs(
     print(f'Done getting subdirectories from\n{in_dir}.\n')
     # print(compress_list)
     
-    if len(compress_list) == 0:
+    if len(compress_list) == 0 or as_a_unit:
         compress_list = [in_dir,]
         in_dir = os.path.abspath(in_dir + '/..')
     
@@ -355,23 +356,26 @@ if __name__ == "__main__":
     if win_cmd:
         in_dir = input("directory to look in?\n_")
         # in_dir = "T:/uh_oh/pleeelp"
+        as_a_unit = False
         
-        exlist_str = "enter a directory to exclude, or press [Enter] "
         exclude_list = []
-        exitem = input(exlist_str + f"to include all files in\n{in_dir}.\n_")
-        while not(len(exitem) == 0):
-            exclude_list.append(exitem)
-            exitem = input(exlist_str + f"if done adding items.\n_")
-        
-        print(exclude_list)
+        if not(as_a_unit):
+            exlist_str = "enter a directory to exclude, or press [Enter] "
+            exitem = input(exlist_str + f"to include all files in\n{in_dir}.\n_")
+            while not(len(exitem) == 0):
+                exclude_list.append(exitem)
+                exitem = input(exlist_str + f"if done adding items.\n_")
+            
+            print(exclude_list)
     
         try:
             parp = zip_dirs(
                 in_dir = in_dir,
                 logging = True,
-                loud_mode = False,
+                loud_mode = True,
                 prompts_on = True,
-                exclude_list = exclude_list
+                as_a_unit = as_a_unit,
+                exclude_list = exclude_list,
             )
         except Exception as eee:
             print(eee)
