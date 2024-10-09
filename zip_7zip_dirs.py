@@ -161,9 +161,11 @@ def zip_dirs(
                     if winstat_str == "00400020":
                         add_to_uncompressed = True
                     else:
+                        
+                        if loud_mode:
+                            tryprint(str_in = f"current path = {pathe}")
+                        
                         try:
-                            if loud_mode:
-                                print(f"current path = {pathe}")
                             archive.write(**archive_dict)
                             
                         except Exception as exx:
