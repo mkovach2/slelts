@@ -361,7 +361,7 @@ if __name__ == "__main__":
             parp = zip_dirs(
                 in_dir = in_dir,
                 logging = True,
-                loud_mode = True,
+                loud_mode = False,
                 prompts_on = True,
                 exclude_list = exclude_list
             )
