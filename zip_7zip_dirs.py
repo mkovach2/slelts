@@ -321,7 +321,7 @@ def trywrite(filepath, mode, str_in, str_else = ''):
                 file.write(str_in)
                 can_write = True
             except:
-                file.write(str_in)
+                file.write(str_else)
                 can_write = False
     except:
         can_write = False
