@@ -66,12 +66,17 @@ if __name__ == "__main__":
         solo_columns = pd.DataFrame()
         if not(os.path.isdir(f'{save_dir}/grouped')):
             os.mkdir(f'{save_dir}/grouped')
-        for col_name in col_df_dict.keys():
-            if len(col_df_dict[col_name].columns) == 1:
-                solo_columns[f'{col_df_dict[col_name].columns[0]}:{col_name}'] = col_df_dict[col_name]
-            else:
-                col_df_dict[col_name].to_csv(f'{save_dir}/grouped/{col_name}.csv')
-        solo_columns.to_csv(f'{save_dir}/grouped/solo_columns.csv')
+        
+        excel_name = os.path.basename(load_dir) + '.xlsx'
+        with pd.ExcelWriter(os.path.join(load_dir, excel_name)) as writer:
+            for col_name in col_df_dict.keys():
+                if len(col_df_dict[col_name].columns) == 1:
+                    solo_columns[f'{col_df_dict[col_name].columns[0]}:{col_name}'] = col_df_dict[col_name]
+                else:
+                    col_df_dict[col_name].to_csv(f'{save_dir}/grouped/{col_name}.csv')
+                    col_df_dict[col_name].to_excel(writer, sheet_name = col_name)
+            solo_columns.to_csv(f'{save_dir}/grouped/solo_columns.csv')
+            solo_columns.to_excel(writer, sheet_name = "solo_columns")
     
     
     if win_cmd:
