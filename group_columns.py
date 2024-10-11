@@ -11,6 +11,9 @@
 
 import os
 import pandas as pd
+pd.io.formats.excel.ExcelFormatter.header_style = None
+# ^this is so that we dont get obnoxious default formatting on the top row and 
+# index column
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
