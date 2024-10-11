@@ -18,8 +18,7 @@ import pandas as pd
 win_cmd = True
 save_outputs = True
 
-load_dir = 'C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/'+\
-    'General - Products/+NewFileSystem/Device Components/PRBS/subL_grating/DoE/res_10'
+load_dir = 'T:/Device Components/Grating Coupler/20241010_PoR_t3d/2d_2'
 
 save_dir = load_dir
 

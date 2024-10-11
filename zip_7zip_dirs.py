@@ -356,7 +356,11 @@ if __name__ == "__main__":
     if win_cmd:
         in_dir = input("directory to look in?\n_")
         # in_dir = "T:/uh_oh/pleeelp"
-        as_a_unit = False
+        as_a_unit = input("do this folder as a unit (y/N)?\n_")
+        if as_a_unit.lower() != 'y':
+            as_a_unit = False
+        else:
+            as_a_unit = True
         
         exclude_list = []
         if not(as_a_unit):
