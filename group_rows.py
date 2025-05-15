@@ -1,4 +1,4 @@
-# <sheet>.py
+# <filename>.py
 # <project>
 # Author: miles at hyperlightcorp dot com
 # Created: <date>
@@ -19,8 +19,12 @@ pd.io.formats.excel.ExcelFormatter.header_style = None
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-win_cmd = True
+win_cmd = False
 save_outputs = True
+
+load_dir = 'T:/Device Components/Grating Coupler/20250321_fab_var_study/20250514_stage_8a_ze'
+
+save_dir = load_dir
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -32,23 +36,16 @@ save_outputs = True
 if __name__ == "__main__":
     
     if win_cmd:
-        excel_path = input('input path to XLSX file\n').strip("\"\'")
-        # save_dir = excel_path
-    
-    else:
-        excel_path = "C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/"+\
-            "General - Products/+NewFileSystem/Device Components/Grating Coupler/"+\
-            "20250321_fab_var_study/20250507_stage_5/compact_data_5a_11015201.xlsx"
-
-    save_dir = os.path.dirname(excel_path)
+        load_dir = input('input directory containing CSVs\n')
+        save_dir = load_dir
     
     df_dict = {}
     column_list = []
-    excel_sheets = pd.ExcelFile(excel_path).sheet_names
-    # pd.read_excel()
-    for sheet in excel_sheets:
-        df_dict[sheet] = (pd.read_excel(excel_path, sheet_name = sheet, index_col=0))
-        column_list += list(df_dict[sheet].columns)
+    for filename in os.listdir(load_dir):
+        if filename.rpartition('.')[-1] == 'csv':
+            filekey = filename.rpartition('.')[0]
+            df_dict[filekey] = pd.read_csv(f'{load_dir}/{filename}', index_col = 0).T
+            column_list += list(df_dict[filekey].columns)
     
     column_list = pd.unique(pd.Series(column_list))
     # made it a series bc of a deprecation warning
@@ -74,9 +71,8 @@ if __name__ == "__main__":
         if not(os.path.isdir(f'{save_dir}/grouped')):
             os.mkdir(f'{save_dir}/grouped')
         
-        excel_name = os.path.basename(excel_path)[:-5] + '_sorted.xlsx'
-        full_excel_save_path = os.path.join(save_dir, excel_name)
-        with pd.ExcelWriter(full_excel_save_path) as writer:
+        excel_name = os.path.basename(load_dir) + '.xlsx'
+        with pd.ExcelWriter(os.path.join(load_dir, excel_name)) as writer:
             for col_name in col_df_dict.keys():
                 if len(col_df_dict[col_name].columns) == 1:
                     solo_columns[f'{col_df_dict[col_name].columns[0]}:{col_name}'] = col_df_dict[col_name]
@@ -85,7 +81,6 @@ if __name__ == "__main__":
                     col_df_dict[col_name].to_excel(writer, sheet_name = col_name)
             solo_columns.to_csv(f'{save_dir}/grouped/solo_columns.csv')
             solo_columns.to_excel(writer, sheet_name = "solo_columns")
-        print(f"excel file saved as:\n{full_excel_save_path}")
     
     
     if win_cmd:

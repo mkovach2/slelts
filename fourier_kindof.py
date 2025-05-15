@@ -2,19 +2,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 pi = np.pi
 
-filepath = "C:/Users/miles.HYPERLIGHT/Desktop/low-vibe.csv"
+filepath = "C:/Users/miles.HYPERLIGHT/Desktop/sneep.csv"
 # filepath = "C:/Users/miles.HYPERLIGHT/Desktop/high-vibe.csv"
 use_stem = True
 indata = np.loadtxt(filepath,delimiter=',',skiprows=1)
 time_col = True
-export_csv = True
+export_csv = False
 csv_path = "C:/Users/miles.HYPERLIGHT/Desktop/outie_lo_2.csv"
 # csv_path = "C:/Users/miles.HYPERLIGHT/Desktop/outie_high_2.csv"
 
-# f_cutoff = 0.6 # to use as a kind of DC block
-# pass_range = (362,364)
-# pass_range = (6e-5, 6.4e-5)
-pass_range = (10,12.6)
+# f_cutoff = 0.01 # to use as a kind of DC block
+# range_filter = (362,364)
+# range_filter = (6e-5, 6.4e-5)
+range_filter = (0.2,)
+filter_mode = "lo"
 # enter 1 number for a HPF, a range for anything else
 delta = 7.27
 # delta = 1
@@ -28,12 +29,14 @@ fig, axs = plt.subplots(1, 2)
 fig2, axs2 = plt.subplots(1, 2)
 colors = ('r','g','b','orange','black')
 
-for column in (3,):
-# for column in np.arange(1,np.shape(indata)[1]):
+# for column in (3,):
+for column in np.arange(1,np.shape(indata)[1]):
+    current_color = colors[(column-1) % len(colors)]
+    
     if time_col:
-        axs[0].plot(indata[:,0], indata[:,column], color = colors[column-1])
+        axs[0].plot(indata[:,0], indata[:,column], color = current_color)
     else:
-        axs[0].plot(indata[:,column], color = colors[column-1])
+        axs[0].plot(indata[:,column], color = current_color)
     
     axs[0].set_title('input')
     
@@ -47,26 +50,44 @@ for column in (3,):
     # ft_for_plot = ft[1:plotmax]
     
     if use_stem == True:
-        axs[1].stem(ft_x,np.abs(ft_for_plot),markerfmt = colors[column-1])
+        axs[1].stem(ft_x,np.abs(ft_for_plot),markerfmt = current_color)
     else:
-        axs[1].plot(ft_x,np.abs(ft_for_plot),color = colors[column-1])
-    # axs[1].stem(ft_x,np.imag(ft_for_plot),markerfmt = colors[column-1])
+        axs[1].plot(ft_x,np.abs(ft_for_plot),color = current_color)
+    # axs[1].stem(ft_x,np.imag(ft_for_plot),markerfmt = current_color)
     axs[1].set_title('first ft')
     
-    if len(pass_range) == 1: # HPF
-        if time_col:
-            fil = np.array(np.arange(len(ft)) < np.argmin(np.abs(ft_x - pass_range[0])),dtype = int)
-        else:
-            fil = np.array(np.arange(len(ft)) < pass_range[0],dtype = int) # int conversion because they start as bools
+    if len(range_filter) == 1: # HPF
+        if filter_mode.lower() in ("high", "hi", "hpf"):
+            if time_col:
+                fil = np.array(np.arange(len(ft)) > np.argmin(np.abs(ft_x - range_filter[0])),dtype = int)
+            else:
+                fil = np.array(np.arange(len(ft)) > range_filter[0],dtype = int) # int conversion because they start as bools
+        elif filter_mode.lower() in ("low", "lo", "lpf"):
+            if time_col:
+                fil = np.array(np.arange(len(ft)) < np.argmin(np.abs(ft_x - range_filter[0])),dtype = int)
+            else:
+                fil = np.array(np.arange(len(ft)) < range_filter[0],dtype = int) # int conversion because they start as bools
     else:
-        if time_col:
-            fil_lo = np.array(np.arange(len(ft)) > np.argmin(np.abs(ft_x - min(pass_range))),dtype = int)
-            fil_hi = np.array(np.arange(len(ft)) < np.argmin(np.abs(ft_x - max(pass_range))),dtype = int)
-        else:
-            fil_lo = np.array(np.arange(len(ft)) > min(pass_range),dtype = int) # int conversion because they start as bools
-            fil_hi = np.array(np.arange(len(ft)) < max(pass_range),dtype = int) # int conversion because they start as bools
-        fil = fil_lo * fil_hi
-        
+        if filter_mode.lower() == "pass":
+            if time_col:
+                fil_lo = np.array(np.arange(len(ft)) > np.argmin(np.abs(ft_x - min(range_filter))),dtype = int)
+                fil_hi = np.array(np.arange(len(ft)) < np.argmin(np.abs(ft_x - max(range_filter))),dtype = int)
+            else:
+                fil_lo = np.array(np.arange(len(ft)) > min(range_filter),dtype = int) # int conversion because they start as bools
+                fil_hi = np.array(np.arange(len(ft)) < max(range_filter),dtype = int) # int conversion because they start as bools
+            
+            fil = fil_lo * fil_hi
+       
+        elif filter_mode.lower() == "stop":
+            if time_col:
+                fil_lo = np.array(np.arange(len(ft)) < np.argmin(np.abs(ft_x - min(range_filter))),dtype = int)
+                fil_hi = np.array(np.arange(len(ft)) > np.argmin(np.abs(ft_x - max(range_filter))),dtype = int)
+            else:
+                fil_lo = np.array(np.arange(len(ft)) < min(range_filter),dtype = int) # int conversion because they start as bools
+                fil_hi = np.array(np.arange(len(ft)) > max(range_filter),dtype = int) # int conversion because they start as bools
+            
+            fil = fil_lo + fil_hi
+    
     newft = np.multiply(fil,ft)
     
     if time_col:
@@ -77,10 +98,10 @@ for column in (3,):
         newft_for_plot = newft[1:plotmax]
     
     if use_stem == True:
-        axs2[1].stem(newft_x,np.abs(newft_for_plot),markerfmt = colors[column-1])
+        axs2[1].stem(newft_x,np.abs(newft_for_plot),markerfmt = current_color)
     else:
-        axs2[1].plot(newft_x,np.abs(newft_for_plot),color = colors[column-1])
-    # axs2[0].stem(newft_x,np.imag(newft_for_plot),markerfmt = colors[column-1])
+        axs2[1].plot(newft_x,np.abs(newft_for_plot),color = current_color)
+    # axs2[0].stem(newft_x,np.imag(newft_for_plot),markerfmt = current_color)
     axs2[1].set_title('new ft')
     
     i_new = np.fft.irfft(newft)
@@ -89,7 +110,7 @@ for column in (3,):
     if time_col:
         i_new_x = i_new_x * (indata[1, 0] - indata[0, 0])
     
-    axs2[0].plot(i_new_x, i_new, color = colors[column-1])
+    axs2[0].plot(i_new_x, i_new, color = current_color)
     axs2[0].set_title('new linear')
     
     if export_csv:

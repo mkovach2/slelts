@@ -19,8 +19,8 @@ pd.io.formats.excel.ExcelFormatter.header_style = None
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-win_cmd = True
-save_outputs = True
+win_cmd = False
+save_outputs = False
 
 load_dir = 'T:/Device Components/Grating Coupler/20241010_PoR_t3d/2d_2'
 
