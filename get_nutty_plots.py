@@ -15,11 +15,15 @@ import matplotlib.pyplot as plt
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-lonj = "C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/"+\
-    "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
-
-csv_in_path = lonj +\
-    "20250519_apodized_+8_g2f11/stage_1/grouped/no_sweep = 1.csv"
+if False:
+    lonj = "C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/"+\
+        "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
+    
+    csv_in_path = lonj +\
+        "20250519_apodized_+8_g2f11/stage_2/grouped/076_thru_150.csv"
+else:
+    csv_in_path = "T:/Device Components/Grating Coupler/"+\
+        "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
 
 graphs_ratio = np.array((2,1)) # num rows, num columns
 
@@ -34,9 +38,12 @@ plt.style.use("seaborn-v0_8")
 if __name__ == "__main__":
     
     # deeta = pd.read_csv(csv_in_path, index_col = 0)
-    deeta = np.loadtxt(csv_in_path, delimiter = ',', skiprows = 1)
+    skip_number = 1
+    deeta = np.loadtxt(csv_in_path, delimiter = ',', skiprows = skip_number)
     with open(csv_in_path, "r") as ci:
-        uid_row = ci.readline().split(',')
+        for aa in range(skip_number):
+            uid_row = ci.readline()
+        uid_row = uid_row.split(',')
     
     # allmax = int(np.max(deeta[:,1:])) + 1
     allmin = int(np.min(deeta[:,1:])) - 1
@@ -55,7 +62,7 @@ if __name__ == "__main__":
     for col in range(num_graphs):
         axs[col // tru_ratio[1], col % tru_ratio[1]].plot(deeta[:,0], deeta[:,col + 1])
         axs[col // tru_ratio[1], col % tru_ratio[1]].set(
-            title = uid_row[col + 1],
+            title = f"{uid_row[col + 1]}: max = {np.max(deeta[:,col + 1])}",
             ylim = (allmin, 0)
         )
         

@@ -58,20 +58,27 @@ while keepGoing:
             print("files already exists oops")
             err = 1
     #end if newFolder
-      
+    
+    cant_str = ""
     if not(err):
         for fileN in allFiles:
             if oldStr in fileN:
-                if newFolder:
-                    os.replace(fileN,oldDir + "/" + newStr + '/' + fileN.replace(oldStr,newStr))
-                #end if newFolder
-                else:
-                    os.replace(fileN,oldDir + "/" + fileN.replace(oldStr,newStr))
-                #end else
+                try:
+                    if newFolder:
+                        os.replace(fileN,oldDir + "/" + newStr + '/' + fileN.replace(oldStr,newStr))
+                    #end if newFolder
+                    else:
+                        os.replace(fileN,oldDir + "/" + fileN.replace(oldStr,newStr))
+                    #end else
+                except:
+                    cant_str += fileN + "\n"
             #end if oldStr in fileN
         #end for fileN in allFiles
     #end if !err
-   
+    
+    if len(cant_str) > 0:
+        print("couldnt do it for these files:\n" + cant_str)
+    
     if userAsk:
         yslashn = input("keep going (using the same folder)? (y/N)\n")
         if yslashn.lower() == 'y':
