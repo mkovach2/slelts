@@ -15,12 +15,12 @@ import matplotlib.pyplot as plt
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-if False:
+if True:
     lonj = "C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/"+\
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
     
     csv_in_path = lonj +\
-        "20250519_apodized_+8_g2f11/stage_2/grouped/076_thru_150.csv"
+        "20250519_apodized_+8_g2f11/stage_1_advanced_xe/grouped/no_sweep = 1.csv"
 else:
     csv_in_path = "T:/Device Components/Grating Coupler/"+\
         "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
