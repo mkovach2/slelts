@@ -20,7 +20,7 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
     
     csv_in_path = lonj +\
-        "20250519_apodized_+8_g2f11/stage_1_advanced_xe/grouped/no_sweep = 1.csv"
+        "20250602_apodized_+8_g2f11_o_band/vert_st2_o_band/grouped/6117_thru_6707.csv"
 else:
     csv_in_path = "T:/Device Components/Grating Coupler/"+\
         "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
@@ -28,6 +28,8 @@ else:
 graphs_ratio = np.array((2,1)) # num rows, num columns
 
 plt.style.use("seaborn-v0_8")
+verts_at = (1310,) # put empty for no vert lines
+horiz_percentiles = (10, 50, 90)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -60,9 +62,27 @@ if __name__ == "__main__":
     )
     
     for col in range(num_graphs):
-        axs[col // tru_ratio[1], col % tru_ratio[1]].plot(deeta[:,0], deeta[:,col + 1])
-        axs[col // tru_ratio[1], col % tru_ratio[1]].set(
+        aqses = axs[col // tru_ratio[1], col % tru_ratio[1]]
+        aqses.plot(deeta[:,0], deeta[:,col + 1])
+        aqses.set(
             title = f"{uid_row[col + 1]}: max = {np.max(deeta[:,col + 1])}",
             ylim = (allmin, 0)
         )
+        if len(verts_at) > 0:
+            aqses.vlines(
+                x = verts_at,
+                ymin = allmin,
+                ymax = 0,
+                colors = 'r',
+                linestyles = '--'
+            )
+        if len(horiz_percentiles) > 0:
+            aqses.hlines(
+                y = np.percentile(deeta[:,col + 1], horiz_percentiles),
+                xmin = np.min(deeta[:,0]),
+                xmax = np.max(deeta[:,0]),
+                colors = 'g',
+                linestyles = '--',
+                linewidth = 1
+            )
         
