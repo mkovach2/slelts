@@ -119,21 +119,30 @@ def zip_ext(
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~main~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 if __name__ == "__main__":
     
-    in_dir = input("directory to look in?\n_")
-    match_str = input("match_str to compress?\n_")
+    again = True
     
-    c_list = zip_ext(
-        in_dir = in_dir,
-        match_str = match_str,
-        compresslevel = 5,
-        loud_mode = True
-    )
-    
-    yslashn = input("delete originals? (y/N)\n_")
-    if yslashn.lower() == 'y':
-        for c_name in c_list:
-            os.remove(os.path.join(os.path.abspath(in_dir), c_name))
-    
+    while again:
+        
+        in_dir = input("directory to look in?\n_")
+        match_str = input("match_str to compress?\n_")
+        
+        in_dir = in_dir.replace('\\','/').strip('\"')
+        
+        c_list = zip_ext(
+            in_dir = in_dir,
+            match_str = match_str,
+            compresslevel = 5,
+            loud_mode = True
+        )
+        
+        yslashn = input("delete originals? (y/N)\n_")
+        if yslashn.lower() == 'y':
+            for c_name in c_list:
+                os.remove(os.path.join(os.path.abspath(in_dir), c_name))
+        
+        cont_inp = input("continue? (y/N)\n_")
+        again = cont_inp.lower() == 'y'
+        
     input("\nEnter to quit.")
     
 #end if __name__ == "__main__"

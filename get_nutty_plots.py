@@ -20,7 +20,12 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
     
     csv_in_path = lonj +\
-        "20250602_apodized_+8_g2f11_o_band/vert_st2_o_band/grouped/6117_thru_6707.csv"
+        "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/grouped/96678_thru_97182.csv"
+        # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/86450_thru_87401.csv"
+        # "20250602_apodized_+8_g2f11_o_band/vert_st3_o_band/grouped/84739_thru_85232.csv"
+        # "20250602_apodized_+8_g2f11_o_band/horiz_st2_o_band/grouped/6692_thru_7240.csv"
+        # "20250602_apodized_+8_g2f11_o_band/horiz_st1_o_band/grouped/no_sweep = 1.csv"
+        
 else:
     csv_in_path = "T:/Device Components/Grating Coupler/"+\
         "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
@@ -28,7 +33,7 @@ else:
 graphs_ratio = np.array((2,1)) # num rows, num columns
 
 plt.style.use("seaborn-v0_8")
-verts_at = (1310,) # put empty for no vert lines
+verts_at = (1550,) # put empty for no vert lines
 horiz_percentiles = (10, 50, 90)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -48,7 +53,8 @@ if __name__ == "__main__":
         uid_row = uid_row.split(',')
     
     # allmax = int(np.max(deeta[:,1:])) + 1
-    allmin = int(np.min(deeta[:,1:])) - 1
+    allmin = -75
+    # allmin = int(np.min(deeta[:,1:])) - 1
     
     num_graphs = np.shape(deeta)[1] - 1
     tru_ratio = (np.around((num_graphs/np.product(graphs_ratio))**0.5 * graphs_ratio)).astype(int)
