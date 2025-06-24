@@ -39,6 +39,8 @@ if __name__ == "__main__":
     else:
         roote = 'T:/Device Components/Grating Coupler/20241010_PoR_t3d/2d'
     
+    roote = roote.replace("\\","/").strip("\"").strip("\'") # de-widowfy the path
+    
     if os.path.isdir(roote):
         roote = pathlib.Path(roote)
         dumbs_list = list(roote.rglob(pattern = from_str))
