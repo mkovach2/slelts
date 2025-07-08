@@ -20,9 +20,10 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
     
     csv_in_path = lonj +\
-        "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/grouped/96678_thru_97182.csv"
+        "20250602_apo_+8_g2f11_o_band/vert_st4_o_band/grouped/16614_thru_17171.csv"
+        # "20250607_apodized_+8_TEOS_o_band_vert/stage_4/grouped/54636_thru_55738.csv"
+        # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/grouped/96678_thru_97182.csv"
         # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/86450_thru_87401.csv"
-        # "20250602_apodized_+8_g2f11_o_band/vert_st3_o_band/grouped/84739_thru_85232.csv"
         # "20250602_apodized_+8_g2f11_o_band/horiz_st2_o_band/grouped/6692_thru_7240.csv"
         # "20250602_apodized_+8_g2f11_o_band/horiz_st1_o_band/grouped/no_sweep = 1.csv"
         
@@ -33,8 +34,13 @@ else:
 graphs_ratio = np.array((2,1)) # num rows, num columns
 
 plt.style.use("seaborn-v0_8")
-verts_at = (1550,) # put empty for no vert lines
-horiz_percentiles = (10, 50, 90)
+
+verts_at = (1260,1310,1360) # put empty for no vert lines
+verts_colors = ('orange', 'red', 'orange') # put empty for no vert lines
+verts_widths = (1, 1.75, 1) # put empty for no vert lines
+ytick_spacing = 10
+
+horiz_percentiles = (10, 50, 75)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -53,7 +59,7 @@ if __name__ == "__main__":
         uid_row = uid_row.split(',')
     
     # allmax = int(np.max(deeta[:,1:])) + 1
-    allmin = -75
+    allmin = -70
     # allmin = int(np.min(deeta[:,1:])) - 1
     
     num_graphs = np.shape(deeta)[1] - 1
@@ -64,27 +70,53 @@ if __name__ == "__main__":
     fig, axs = plt.subplots(
         tru_ratio[0],
         tru_ratio[1],
-        gridspec_kw={"wspace": 0.5, "hspace": 0.5}
+        gridspec_kw={
+            "wspace": 0.25,
+            "hspace": 0.60,
+            "bottom": 0.04,
+            "left"  : 0.04,
+            "top"   : 0.965,
+            "right" : 0.96,
+            
+        },
+    )
+    
+    fig.suptitle(
+        f"percentiles = {tuple(np.flip(np.sort(horiz_percentiles)))}; "+\
+            f"red lines = {tuple(np.sort(verts_at))}",
+        y = 0.99
     )
     
     for col in range(num_graphs):
         aqses = axs[col // tru_ratio[1], col % tru_ratio[1]]
         aqses.plot(deeta[:,0], deeta[:,col + 1])
+        
+        hp_vals = np.percentile(deeta[:,col + 1], horiz_percentiles)
+        
+        
+        title_str = f"{uid_row[col + 1]}\n"+\
+            f"max = {np.max(deeta[:,col + 1])}\n"+\
+            f"{tuple(np.flip(np.sort(np.around(hp_vals, 2))))}"
+        
         aqses.set(
-            title = f"{uid_row[col + 1]}: max = {np.max(deeta[:,col + 1])}",
-            ylim = (allmin, 0)
+            # title = title_str,
+            ylim = (allmin, 0),
+            yticks = np.arange(allmin, ytick_spacing, ytick_spacing)
         )
+        aqses.set_title(title_str, fontsize = 8)
+        
         if len(verts_at) > 0:
             aqses.vlines(
                 x = verts_at,
                 ymin = allmin,
                 ymax = 0,
-                colors = 'r',
-                linestyles = '--'
+                colors = verts_colors,
+                linestyles = '--',
+                linewidths = verts_widths
             )
         if len(horiz_percentiles) > 0:
             aqses.hlines(
-                y = np.percentile(deeta[:,col + 1], horiz_percentiles),
+                y = hp_vals,
                 xmin = np.min(deeta[:,0]),
                 xmax = np.max(deeta[:,0]),
                 colors = 'g',
