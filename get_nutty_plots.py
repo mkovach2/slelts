@@ -31,7 +31,7 @@ else:
     csv_in_path = "T:/Device Components/Grating Coupler/"+\
         "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
 
-graphs_ratio = np.array((2,1)) # num rows, num columns
+graphs_ratio = np.array((2.0,1.0)) # num rows, num columns
 
 plt.style.use("seaborn-v0_8")
 
@@ -75,7 +75,8 @@ if __name__ == "__main__":
             "hspace": 0.60,
             "bottom": 0.04,
             "left"  : 0.04,
-            "top"   : 0.965,
+            # "top"   : 0.94,
+            "top"   : 0.965, # a good top for graphs_ratio = (2,1)
             "right" : 0.96,
             
         },
