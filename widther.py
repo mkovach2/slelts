@@ -6,9 +6,11 @@ import matplotlib.pyplot as plt
 plt.style.use("bmh")
 
 
+
 def lin_interp_func(a_in, a0, a1, b0, b1):
     b = (a_in - a0) * (b1 - b0) / (a1 - a0) + b0
     return float(b)
+
 
 
 def nearest_lr(
@@ -22,55 +24,30 @@ def nearest_lr(
 ):
     max_at = np.argmax(in_data_y)
     maxpoint = (in_data_x[max_at], in_data_y[max_at])
-    
-    # axes.scatter(maxpoint[0], maxpoint[1])
-    
-    # leftmat = aree[in_data_x < maxpoint[0]]
-    # rightmat = aree[in_data_x > maxpoint[0]]
-    # 
-    # diffmat = in_data_y - tval
-    
-    # if lin_interp:
-    #     1
-    # else:
-    #     points = np.argmin()
-    
-    # aree2 = np.zeros((r,c))
-    
-    # crossings_up = np.where(np.logical_and(in_data_y[:-1] < tval, in_data_y[1:] > tval))[0]
-    # crossings_down = np.where(np.logical_and(in_data_y[:-1] > tval, in_data_y[1:] < tval))[0]
-    crossings_eq = np.where(in_data_y == tval)[0]
+
+    crossings_eq = np.where(in_data_y == target_y)[0]
     
     crossings_ud = np.where(np.logical_or(
-        np.logical_and(in_data_y[:-1] < tval, in_data_y[1:] > tval),
-        np.logical_and(in_data_y[:-1] > tval, in_data_y[1:] < tval)
+        np.logical_and(in_data_y[:-1] < target_y, in_data_y[1:] > target_y),
+        np.logical_and(in_data_y[:-1] > target_y, in_data_y[1:] < target_y)
     ))[0]
     
     x_points = list(crossings_eq)
-    y_points = list(tval * np.ones(np.shape(x_points)))
+    y_points = list(target_y * np.ones(np.shape(x_points)))
     
-    # for nn in (crossings_up,):
-    # for nn in (crossings_down, crossings_up):
-        # if nn is crossings_down:
-            # 1 = 1
-        # else:
-            # 1 = 1
-        
     for cn in crossings_ud:
-        # axes.scatter(in_data_x[cn], in_data_y[cn])
-        # axes.scatter(in_data_x[cn + 1], in_data_y[cn + 1])
         if lin_interp:
             x_points.append(lin_interp_func(
-                a_in = tval,
+                a_in = target_y,
                 a0 = in_data_y[cn],
                 a1 = in_data_y[cn + 1],
                 b0 = in_data_x[cn],
                 b1 = in_data_x[cn + 1],
             ))
-            y_points.append(tval)
+            y_points.append(target_y)
         else:
             # just chooses the closest data point without interpolating
-            if abs(in_data_y[cn] - tval) < abs(in_data_y[cn + 1] - tval):
+            if abs(in_data_y[cn] - target_y) < abs(in_data_y[cn + 1] - target_y):
                 x_points.append(in_data_x[cn])
                 y_points.append(in_data_y[cn])
             else:
@@ -85,28 +62,24 @@ def nearest_lr(
     x_right = x_points[x_points > maxpoint[0]]
     y_right = y_points[x_points > maxpoint[0]]
     
-    x_left_at = np.argmax(x_left)
-    x_right_at = np.argmin(x_right)
     
-    # print(f"x_points = {x_points}")
-    # print(f"y_points = {y_points}")
-    # print(f"x_points[x_points < maxpoint[0]] = {x_points[x_points < maxpoint[0]]}")
-    # print(f"x_points[x_points > maxpoint[0]] = {x_points[x_points > maxpoint[0]]}")
-    # print("farts")
+    ret_arr = np.zeros((2,2))
     
-    return np.array((
-        (x_left[x_left_at], y_left[x_left_at]),
-        (x_right[x_right_at], y_right[x_right_at])
-    ))
-    # crossings = np.logical_or(
-    #     np.logical_and(in_data_y[:-1] < tval, in_data_y[1:] > tval),
-    #     np.logical_and(in_data_y[:-1] > tval, in_data_y[1:] < tval),
-    #     # in_data_y[:-1] == tval
-    # )
+    if len(x_left) > 0:
+        ret_arr[0, 0] = x_left[np.argmax(x_left)]
+        ret_arr[0, 1] = y_left[np.argmax(x_left)]
+    else:
+        ret_arr[0, 0] = np.nan
+        ret_arr[0, 1] = np.nan
     
-    # print(in_data_x[:-1], in_data_y[:-1][crossings])
+    if len(x_right) > 0:
+        ret_arr[1, 0] = x_right[np.argmin(x_right)]
+        ret_arr[1, 1] = y_right[np.argmin(x_right)]
+    else:
+        ret_arr[1, 0] = np.nan
+        ret_arr[1, 1] = np.nan
     
-    # aree * np.logical_and(aree[:-1,1] <= tval, aree[1:,1] > tval)
+    return ret_arr
 
 
 
@@ -216,6 +189,14 @@ if __name__ == "__main__":
     )
     
     print(xy_points)
+    
+    axes.fill_between(
+        x = (min(xy_points[:,0]), max(xy_points[:,0])),
+        y1 = min(in_data_y),
+        y2 = max(in_data_y),
+        color = 'blue',
+        alpha = 0.1
+    )
     
     # axes.vlines(
     #     x = x_points,
