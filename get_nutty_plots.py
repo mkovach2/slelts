@@ -20,7 +20,8 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
         
     csv_in_path = lonj +\
-        "20250602_apo_+8_g2f11_o_band/vert_altst1_o_band/grouped/grouped_by_inputs.csv"
+        "20250611_apo_combined_proposal/g2f11_c_h/grouped/no_sweep = 1.csv"
+        # "20250602_apo_+8_g2f11_o_band/vert_st6_o_band/grouped/no_sweep = 1.csv"
         # "20250607_apodized_+8_TEOS_o_band_vert/stage_4/grouped/54636_thru_55738.csv"
         # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/grouped/96678_thru_97182.csv"
         # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/86450_thru_87401.csv"
@@ -31,12 +32,12 @@ else:
     csv_in_path = "T:/Device Components/Grating Coupler/"+\
         "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
 
-graphs_ratio = np.array((2.0,1.0)) # num rows, num columns
+graphs_ratio = np.array((5.0,1.0)) # num rows, num columns
 
 plt.style.use("bmh")
 # plt.style.use("seaborn-v0_8")
 
-verts_at = (1310,) # put empty for no vert lines
+verts_at = (1550,) # put empty for no vert lines
 verts_colors = ('red',) # put empty for no vert lines
 verts_widths = (1.75,) # put empty for no vert lines
 
@@ -44,11 +45,12 @@ verts_widths = (1.75,) # put empty for no vert lines
 # verts_colors = ('orange', 'red', 'orange') # put empty for no vert lines
 # verts_widths = (1, 1.75, 1) # put empty for no vert lines
 
-shade_between = (1260, 1360) # put empty for no fillski tweenor
+shade_between = (1530, 1565) # put empty for no fillski tweenor
+# shade_between = (1260, 1360) # put empty for no fillski tweenor
 shade_color = 'blue'
 shade_alpha = 0.075
 
-deebs_at = (-3,-9) # put empty for no deebs lines
+deebs_at = (-3,-6) # put empty for no deebs lines
 deebs_colors = ('black','orange') # put empty for no vert lines
 deebs_widths = (1,1) # put empty for no vert lines
 
@@ -168,6 +170,11 @@ if __name__ == "__main__":
             
         },
     )
+    
+    if any(tru_ratio == 1):
+        axs = np.atleast_2d(axs)
+        if any(np.shape(axs) != tru_ratio):
+            axs = axs.T
     
     super_str = ""
     if len(horiz_percentiles) > 0:
