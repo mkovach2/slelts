@@ -50,7 +50,8 @@ shade_between = (1260, 1360) # put empty for no fillski tweenor
 shade_color = 'blue'
 shade_alpha = 0.075
 
-deebs_at = (-3,-6) # put empty for no deebs lines
+deebs_relative = False
+deebs_at = (-10,-15) # put empty for no deebs lines
 deebs_colors = ('black','orange') # put empty for no vert lines
 deebs_widths = (1,1) # put empty for no vert lines
 
@@ -185,7 +186,10 @@ if __name__ == "__main__":
     if len(shade_between) > 0:
         super_str += f"shaded area = {tuple(np.sort(shade_between))}; "
     if len(deebs_at) > 0:
-        super_str += f"dB drops from max = {deebs_at}; "
+        if deebs_relative:
+            super_str += f"dB drops from max = {deebs_at}; "
+        else:
+            super_str += f"dB drops from 0 = {deebs_at}; "
     
     
     fig.suptitle(super_str, y = 0.99)
@@ -213,10 +217,15 @@ if __name__ == "__main__":
         if len(deebs_at) > 0:
             drop_list = []
             for deebski in range(len(deebs_at)):
+                if deebs_relative:
+                    ty = deeta[:,col + 1].max() - abs(deebs_at[deebski])
+                else:
+                    ty = deebs_at[deebski]
+                
                 lar = nearest_lr(
                     in_data_x = deeta[:,0],
                     in_data_y = deeta[:,col + 1],
-                    target_y = deeta[:,col + 1].max() - abs(deebs_at[deebski]),
+                    target_y = ty,
                     lin_interp = True
                 )
                 
