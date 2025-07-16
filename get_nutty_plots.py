@@ -20,7 +20,7 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
         
     csv_in_path = lonj +\
-        "20250602_apo_+8_g2f11_o_band/vert_st6_o_band/grouped_o/no_sweep = 1.csv"
+        "20250602_apo_+8_g2f11_o_band/vert_st6_o_band/grouped/no_sweep = 1.csv"
         # "20250611_apo_combined_proposal/g2f11_c_h/grouped/no_sweep = 1.csv"
         # "20250607_apodized_+8_TEOS_o_band_vert/stage_4/grouped/54636_thru_55738.csv"
         # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/grouped/96678_thru_97182.csv"
@@ -50,8 +50,8 @@ shade_between = (1260, 1360) # put empty for no fillski tweenor
 shade_color = 'blue'
 shade_alpha = 0.075
 
-deebs_relative = False
-deebs_at = (-10,-15) # put empty for no deebs lines
+deebs_relative = True
+deebs_at = (-3,-9) # put empty for no deebs lines
 deebs_colors = ('black','orange') # put empty for no vert lines
 deebs_widths = (1,1) # put empty for no vert lines
 
@@ -140,7 +140,7 @@ def nearest_lr(
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~main~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 if __name__ == "__main__":
     
-    # deeta = pd.read_csv(csv_in_path, index_col = 0)
+    # deeta = pd.read_csv(csv_in_path, index_col = 4)
     skip_number = 1
     deeta = np.loadtxt(csv_in_path, delimiter = ',', skiprows = skip_number)
     with open(csv_in_path, "r") as ci:
@@ -178,7 +178,7 @@ if __name__ == "__main__":
         },
     )
     
-    super_str = ""
+    super_str = f""
     if len(horiz_percentiles) > 0:
         super_str += f"percentiles = {tuple(np.flip(np.sort(horiz_percentiles)))}; "
     if len(verts_at) > 0:
