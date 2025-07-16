@@ -145,7 +145,7 @@ if __name__ == "__main__":
     with open(csv_in_path, "r") as ci:
         for aa in range(skip_number):
             uid_row = ci.readline()
-        uid_row = uid_row.split(',')
+        uid_row = uid_row.strip().split(',')
     
     # allmax = int(np.max(deeta[:,1:])) + 1
     allmin = -70
