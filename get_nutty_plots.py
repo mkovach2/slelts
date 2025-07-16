@@ -32,7 +32,7 @@ else:
     csv_in_path = "T:/Device Components/Grating Coupler/"+\
         "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
 
-graphs_ratio = np.array((1.0,5.0)) # num rows, num columns
+graphs_ratio = np.array((2.0,1.0)) # num rows, num columns
 
 plt.style.use("bmh")
 # plt.style.use("seaborn-v0_8")
@@ -153,8 +153,14 @@ if __name__ == "__main__":
     
     num_graphs = np.shape(deeta)[1] - 1
     tru_ratio = (np.around((num_graphs/np.product(graphs_ratio))**0.5 * graphs_ratio)).astype(int)
+    
+    if any(tru_ratio == 1):
+        axs = np.atleast_2d(axs)
+        if any(np.shape(axs) != tru_ratio):
+            axs = axs.T
+    
     if np.product(tru_ratio) < num_graphs:
-        tru_ratio[np.argmax(tru_ratio)] += np.min(tru_ratio)
+        tru_ratio[np.argmax(tru_ratio)] += 1
     
     fig, axs = plt.subplots(
         tru_ratio[0],
@@ -170,11 +176,6 @@ if __name__ == "__main__":
             
         },
     )
-    
-    if any(tru_ratio == 1):
-        axs = np.atleast_2d(axs)
-        if any(np.shape(axs) != tru_ratio):
-            axs = axs.T
     
     super_str = ""
     if len(horiz_percentiles) > 0:
