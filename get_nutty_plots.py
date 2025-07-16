@@ -20,8 +20,8 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
         
     csv_in_path = lonj +\
-        "20250611_apo_combined_proposal/g2f11_c_h/grouped/no_sweep = 1.csv"
-        # "20250602_apo_+8_g2f11_o_band/vert_st6_o_band/grouped/no_sweep = 1.csv"
+        "20250602_apo_+8_g2f11_o_band/vert_st6_o_band/grouped_o/no_sweep = 1.csv"
+        # "20250611_apo_combined_proposal/g2f11_c_h/grouped/no_sweep = 1.csv"
         # "20250607_apodized_+8_TEOS_o_band_vert/stage_4/grouped/54636_thru_55738.csv"
         # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/grouped/96678_thru_97182.csv"
         # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/86450_thru_87401.csv"
@@ -32,12 +32,12 @@ else:
     csv_in_path = "T:/Device Components/Grating Coupler/"+\
         "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
 
-graphs_ratio = np.array((5.0,1.0)) # num rows, num columns
+graphs_ratio = np.array((1.0,5.0)) # num rows, num columns
 
 plt.style.use("bmh")
 # plt.style.use("seaborn-v0_8")
 
-verts_at = (1550,) # put empty for no vert lines
+verts_at = (1310,) # put empty for no vert lines
 verts_colors = ('red',) # put empty for no vert lines
 verts_widths = (1.75,) # put empty for no vert lines
 
@@ -45,8 +45,8 @@ verts_widths = (1.75,) # put empty for no vert lines
 # verts_colors = ('orange', 'red', 'orange') # put empty for no vert lines
 # verts_widths = (1, 1.75, 1) # put empty for no vert lines
 
-shade_between = (1530, 1565) # put empty for no fillski tweenor
-# shade_between = (1260, 1360) # put empty for no fillski tweenor
+# shade_between = (1530, 1565) # put empty for no fillski tweenor
+shade_between = (1260, 1360) # put empty for no fillski tweenor
 shade_color = 'blue'
 shade_alpha = 0.075
 
@@ -154,7 +154,7 @@ if __name__ == "__main__":
     num_graphs = np.shape(deeta)[1] - 1
     tru_ratio = (np.around((num_graphs/np.product(graphs_ratio))**0.5 * graphs_ratio)).astype(int)
     if np.product(tru_ratio) < num_graphs:
-        tru_ratio[np.argmax(tru_ratio)] += 1
+        tru_ratio[np.argmax(tru_ratio)] += np.min(tru_ratio)
     
     fig, axs = plt.subplots(
         tru_ratio[0],
