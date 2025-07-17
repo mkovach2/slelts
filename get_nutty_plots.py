@@ -20,8 +20,8 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
         
     csv_in_path = lonj +\
-        "20250602_apo_+8_g2f11_o_band/vert_st6_o_band/grouped/no_sweep = 1.csv"
-        # "20250611_apo_combined_proposal/g2f11_c_h/grouped/no_sweep = 1.csv"
+        "20250611_apo_combined_proposal/g2f11_c_v_small/1/grouped/no_sweep = 1.csv"
+        # "20250602_apo_+8_g2f11_o_band/vert_st6_o_band/grouped/no_sweep = 1.csv"
         # "20250607_apodized_+8_TEOS_o_band_vert/stage_4/grouped/54636_thru_55738.csv"
         # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/grouped/96678_thru_97182.csv"
         # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/86450_thru_87401.csv"
@@ -32,33 +32,48 @@ else:
     csv_in_path = "T:/Device Components/Grating Coupler/"+\
         "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
 
-graphs_ratio = np.array((2.0,1.0)) # num rows, num columns
+
+graphs_ratio = np.array((1.0,5.0)) # num rows, num columns
 
 plt.style.use("bmh")
 # plt.style.use("seaborn-v0_8")
 
-verts_at = (1310,) # put empty for no vert lines
-verts_colors = ('red',) # put empty for no vert lines
-verts_widths = (1.75,) # put empty for no vert lines
+combo_to_use = "c_band" # None to not use a preset combo
 
-# verts_at = (1260,1310,1360) # put empty for no vert lines
-# verts_colors = ('orange', 'red', 'orange') # put empty for no vert lines
-# verts_widths = (1, 1.75, 1) # put empty for no vert lines
+presets = {
+    "verts_at" : (1310,), # put empty for no vert lines
+    "verts_colors" : ('red',), # put empty for no vert lines
+    "verts_widths" : (1.75,), # put empty for no vert lines
+    "shade_between" : (1260, 1360), # put empty for no fillski tweenor
+    "shade_color" : 'blue',
+    "shade_alpha" : 0.075,
+    "deebs_relative" : True,
+    "deebs_at" : (-3,-9), # put empty for no deebs lines
+    "deebs_colors" : ('black','orange'), # put empty for no vert lines
+    "deebs_widths" : (1,1), # put empty for no vert lines
+    "ytick_spacing" : 10,
+    "horiz_percentiles" : (),
+}
 
-# shade_between = (1530, 1565) # put empty for no fillski tweenor
-shade_between = (1260, 1360) # put empty for no fillski tweenor
-shade_color = 'blue'
-shade_alpha = 0.075
+presets_combos = {
+    "o_band" : {
+        "verts_at" : (1310,), # put empty for no vert lines
+        "verts_colors" : ('red',), # put empty for no vert lines
+        "verts_widths" : (1.75,), # put empty for no vert lines
+        "shade_between" : (1260, 1360), # put empty for no fillski tweenor
+    },
+    "c_band" : {
+        "verts_at" : (1550,), # put empty for no vert lines
+        "verts_colors" : ('red',), # put empty for no vert lines
+        "verts_widths" : (1.75,), # put empty for no vert lines
+        "shade_between" : (1530, 1565), # put empty for no fillski tweenor
+    }
+}
 
-deebs_relative = True
-deebs_at = (-3,-9) # put empty for no deebs lines
-deebs_colors = ('black','orange') # put empty for no vert lines
-deebs_widths = (1,1) # put empty for no vert lines
+if not(combo_to_use is None):
+    presets.update(presets_combos[combo_to_use])
 
-ytick_spacing = 10
 
-horiz_percentiles = ()
-# horiz_percentiles = (10, 50, 75)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -155,13 +170,11 @@ if __name__ == "__main__":
     num_graphs = np.shape(deeta)[1] - 1
     tru_ratio = (np.around((num_graphs/np.product(graphs_ratio))**0.5 * graphs_ratio)).astype(int)
     
-    if any(tru_ratio == 1):
-        axs = np.atleast_2d(axs)
-        if any(np.shape(axs) != tru_ratio):
-            axs = axs.T
-    
     if np.product(tru_ratio) < num_graphs:
         tru_ratio[np.argmax(tru_ratio)] += 1
+    
+    if any(tru_ratio == 1):
+        tru_ratio = np.flip(tru_ratio)
     
     fig, axs = plt.subplots(
         tru_ratio[0],
@@ -178,18 +191,22 @@ if __name__ == "__main__":
         },
     )
     
+    axs = np.atleast_2d(axs)
+    if any(np.shape(axs) != tru_ratio):
+        axs = axs.T
+    
     super_str = f""
-    if len(horiz_percentiles) > 0:
-        super_str += f"percentiles = {tuple(np.flip(np.sort(horiz_percentiles)))}; "
-    if len(verts_at) > 0:
-        super_str += f"vertical lines = {tuple(np.sort(verts_at))}; "
-    if len(shade_between) > 0:
-        super_str += f"shaded area = {tuple(np.sort(shade_between))}; "
-    if len(deebs_at) > 0:
-        if deebs_relative:
-            super_str += f"dB drops from max = {deebs_at}; "
+    if len(presets["horiz_percentiles"]) > 0:
+        super_str += f"percentiles = {tuple(np.flip(np.sort(presets["horiz_percentiles"])))}; "
+    if len(presets["verts_at"]) > 0:
+        super_str += f"vertical lines = {tuple(np.sort(presets["verts_at"]))}; "
+    if len(presets["shade_between"]) > 0:
+        super_str += f"shaded area = {tuple(np.sort(presets["shade_between"]))}; "
+    if len(presets["deebs_at"]) > 0:
+        if presets["deebs_relative"]:
+            super_str += f"dB drops from max = {presets["deebs_at"]}; "
         else:
-            super_str += f"dB drops from 0 = {deebs_at}; "
+            super_str += f"dB drops from 0 = {presets["deebs_at"]}; "
     
     
     fig.suptitle(super_str, y = 0.99)
@@ -198,29 +215,29 @@ if __name__ == "__main__":
         aqses = axs[col // tru_ratio[1], col % tru_ratio[1]]
         aqses.plot(deeta[:,0], deeta[:,col + 1])
         
-        hp_vals = np.percentile(deeta[:,col + 1], horiz_percentiles)
+        hp_vals = np.percentile(deeta[:,col + 1], presets["horiz_percentiles"])
         
         
         title_str = f"{uid_row[col + 1]}\n"+\
             f"max = {np.max(deeta[:,col + 1])}\n"
         
-        if len(horiz_percentiles) > 0:
+        if len(presets["horiz_percentiles"]) > 0:
             title_str += f"{tuple(np.flip(np.sort(np.around(hp_vals, 2))))}"
         
         aqses.set(
             # title = title_str,
             ylim = (allmin, 0),
-            yticks = np.arange(allmin, ytick_spacing, ytick_spacing)
+            yticks = np.arange(allmin, presets["ytick_spacing"], presets["ytick_spacing"])
         )
         
         
-        if len(deebs_at) > 0:
+        if len(presets["deebs_at"]) > 0:
             drop_list = []
-            for deebski in range(len(deebs_at)):
-                if deebs_relative:
-                    ty = deeta[:,col + 1].max() - abs(deebs_at[deebski])
+            for deebski in range(len(presets["deebs_at"])):
+                if presets["deebs_relative"]:
+                    ty = deeta[:,col + 1].max() - abs(presets["deebs_at"][deebski])
                 else:
-                    ty = deebs_at[deebski]
+                    ty = presets["deebs_at"][deebski]
                 
                 lar = nearest_lr(
                     in_data_x = deeta[:,0],
@@ -233,9 +250,9 @@ if __name__ == "__main__":
                     x = lar[:,0],
                     ymin = allmin,
                     ymax = lar[:,1],
-                    colors = deebs_colors[deebski],
+                    colors = presets["deebs_colors"][deebski],
                     linestyles = '--',
-                    linewidths = deebs_widths[deebski]
+                    linewidths = presets["deebs_widths"][deebski]
                 )
                 
                 drop_list.append(np.round(max(lar[:,0]) - min(lar[:,0]),2))
@@ -243,16 +260,16 @@ if __name__ == "__main__":
             title_str += str(tuple(drop_list))
                 
                 
-        if len(verts_at) > 0:
+        if len(presets["verts_at"]) > 0:
             aqses.vlines(
-                x = verts_at,
+                x = presets["verts_at"],
                 ymin = allmin,
                 ymax = 0,
-                colors = verts_colors,
+                colors = presets["verts_colors"],
                 linestyles = '--',
-                linewidths = verts_widths
+                linewidths = presets["verts_widths"]
             )
-        if len(horiz_percentiles) > 0:
+        if len(presets["horiz_percentiles"]) > 0:
             aqses.hlines(
                 y = hp_vals,
                 xmin = np.min(deeta[:,0]),
@@ -261,13 +278,13 @@ if __name__ == "__main__":
                 linestyles = '--',
                 linewidth = 1
             )
-        if len(shade_between) > 0:
+        if len(presets["shade_between"]) > 0:
             aqses.fill_between(
-                x = shade_between,
+                x = presets["shade_between"],
                 y1 = allmin,
                 y2 = 0,
-                color = shade_color,
-                alpha = shade_alpha
+                color = presets["shade_color"],
+                alpha = presets["shade_alpha"]
             )
         
         aqses.set_title(title_str, fontsize = 8)
