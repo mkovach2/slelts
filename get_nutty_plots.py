@@ -20,7 +20,7 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
         
     csv_in_path = lonj +\
-        "20250611_apo_combined_proposal/g2f11_c_v_small/1/grouped/no_sweep = 1.csv"
+        "20250611_apo_combined_proposal/g2f11_c_v_small/grouped/no_sweep = 1.csv"
         # "20250602_apo_+8_g2f11_o_band/vert_st6_o_band/grouped/no_sweep = 1.csv"
         # "20250607_apodized_+8_TEOS_o_band_vert/stage_4/grouped/54636_thru_55738.csv"
         # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/grouped/96678_thru_97182.csv"
@@ -173,9 +173,6 @@ if __name__ == "__main__":
     if np.product(tru_ratio) < num_graphs:
         tru_ratio[np.argmax(tru_ratio)] += 1
     
-    if any(tru_ratio == 1):
-        tru_ratio = np.flip(tru_ratio)
-    
     fig, axs = plt.subplots(
         tru_ratio[0],
         tru_ratio[1],
@@ -192,7 +189,7 @@ if __name__ == "__main__":
     )
     
     axs = np.atleast_2d(axs)
-    if any(np.shape(axs) != tru_ratio):
+    if any(np.shape(axs) != tru_ratio): 
         axs = axs.T
     
     super_str = f""
