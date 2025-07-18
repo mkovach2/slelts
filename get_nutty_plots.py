@@ -20,7 +20,7 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
         
     csv_in_path = lonj +\
-        "20250611_apo_combined_proposal/g2f11_c_v_small/grouped/no_sweep = 1.csv"
+        "20250611_apo_combined_proposal/teos_o_v/grouped/no_sweep = 1.csv"
         # "20250602_apo_+8_g2f11_o_band/vert_st6_o_band/grouped/no_sweep = 1.csv"
         # "20250607_apodized_+8_TEOS_o_band_vert/stage_4/grouped/54636_thru_55738.csv"
         # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/grouped/96678_thru_97182.csv"
@@ -38,7 +38,7 @@ graphs_ratio = np.array((1.0,5.0)) # num rows, num columns
 plt.style.use("bmh")
 # plt.style.use("seaborn-v0_8")
 
-combo_to_use = "c_band" # None to not use a preset combo
+combo_to_use = "o_band" # None to not use a preset combo
 
 presets = {
     "verts_at" : (1310,), # put empty for no vert lines
@@ -181,8 +181,9 @@ if __name__ == "__main__":
             "hspace": 0.60,
             "bottom": 0.04,
             "left"  : 0.04,
-            # "top"   : 0.94,
-            "top"   : 0.965, # a good top for graphs_ratio = (2,1)
+            "top"   : 0.80,
+            # "top"   : 0.80, # good for column-favoring ratios like (1, 7)
+            # "top"   : 0.965, # a good top for graphs_ratio = (2,1)
             "right" : 0.96,
             
         },
