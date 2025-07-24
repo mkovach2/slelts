@@ -20,7 +20,7 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
         
     csv_in_path = lonj +\
-        "20250611_apo_combined_proposal/teos_o_v/grouped/no_sweep = 1.csv"
+        "20250611_apo_combined_proposal/g2f11_ov/ccd/grouped/no_sweep = 1.csv"
         # "20250602_apo_+8_g2f11_o_band/vert_st6_o_band/grouped/no_sweep = 1.csv"
         # "20250607_apodized_+8_TEOS_o_band_vert/stage_4/grouped/54636_thru_55738.csv"
         # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/grouped/96678_thru_97182.csv"
@@ -33,7 +33,11 @@ else:
         "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
 
 
-graphs_ratio = np.array((1.0,5.0)) # num rows, num columns
+graphs_ratio = np.array((1.0,1.0)) # num rows, num columns
+
+top_margin_percent = 0.95
+# top_margin_percent = 0.80 # good for column-favoring ratios like (1, 7)
+# top_margin_percent = 0.965 # a good top for graphs_ratio = (2,1)
 
 plt.style.use("bmh")
 # plt.style.use("seaborn-v0_8")
@@ -164,7 +168,7 @@ if __name__ == "__main__":
         uid_row = uid_row.strip().split(',')
     
     # allmax = int(np.max(deeta[:,1:])) + 1
-    allmin = -70
+    allmin = -45
     # allmin = int(np.min(deeta[:,1:])) - 1
     
     num_graphs = np.shape(deeta)[1] - 1
@@ -181,9 +185,7 @@ if __name__ == "__main__":
             "hspace": 0.60,
             "bottom": 0.04,
             "left"  : 0.04,
-            "top"   : 0.80,
-            # "top"   : 0.80, # good for column-favoring ratios like (1, 7)
-            # "top"   : 0.965, # a good top for graphs_ratio = (2,1)
+            "top"   : top_margin_percent,
             "right" : 0.96,
             
         },
@@ -195,16 +197,16 @@ if __name__ == "__main__":
     
     super_str = f""
     if len(presets["horiz_percentiles"]) > 0:
-        super_str += f"percentiles = {tuple(np.flip(np.sort(presets["horiz_percentiles"])))}; "
+        super_str += "percentiles = " + str(tuple(np.flip(np.sort(presets["horiz_percentiles"])))) + "; "
     if len(presets["verts_at"]) > 0:
-        super_str += f"vertical lines = {tuple(np.sort(presets["verts_at"]))}; "
+        super_str += "vertical lines = " + str(tuple(np.sort(presets["verts_at"]))) + "; "
     if len(presets["shade_between"]) > 0:
-        super_str += f"shaded area = {tuple(np.sort(presets["shade_between"]))}; "
+        super_str += "shaded area = " + str(tuple(np.sort(presets["shade_between"]))) + "; "
     if len(presets["deebs_at"]) > 0:
         if presets["deebs_relative"]:
-            super_str += f"dB drops from max = {presets["deebs_at"]}; "
+            super_str += "dB drops from max = " + str(presets["deebs_at"]) + "; "
         else:
-            super_str += f"dB drops from 0 = {presets["deebs_at"]}; "
+            super_str += "dB drops from 0 = " + str(presets["deebs_at"]) + "; "
     
     
     fig.suptitle(super_str, y = 0.99)
@@ -225,10 +227,9 @@ if __name__ == "__main__":
         aqses.set(
             # title = title_str,
             ylim = (allmin, 0),
-            yticks = np.arange(allmin, presets["ytick_spacing"], presets["ytick_spacing"])
+            yticks = np.arange(0, allmin,  -abs(presets["ytick_spacing"]))
         )
-        
-        
+
         if len(presets["deebs_at"]) > 0:
             drop_list = []
             for deebski in range(len(presets["deebs_at"])):
@@ -286,3 +287,5 @@ if __name__ == "__main__":
             )
         
         aqses.set_title(title_str, fontsize = 8)
+
+    plt.show()
