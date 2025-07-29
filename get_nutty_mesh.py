@@ -8,7 +8,7 @@
 # -------10--------20--------30--------40--------50--------60--------70--------
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-# import pandas as pd
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -20,7 +20,7 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
         
     csv_in_path = lonj +\
-        "20250602_apo_+8_g2f11_o_band/ov_curiosity_1_pd1/grouped/by_uid.csv"
+        "20250602_apo_+8_g2f11_o_band/ov_curiosity_1_pd1/grouped/2_axis.csv"
         # "20250602_apo_+8_g2f11_o_band/ov_curiosity_1_pd1/grouped/no_sweep = 1.csv"
         # "20250321_fab_var_study/20250528_stage_alt9/grouped/no_sweep = 1.csv"
         # "20250611_apo_combined_proposal/g2f11_ov/ccd/grouped/no_sweep = 1.csv"
@@ -56,11 +56,14 @@ presets = {
     "deebs_at" : (-3,-9), # put empty for no deebs lines
     "deebs_colors" : ('black','orange'), # put empty for no vert lines
     "deebs_widths" : (1,1), # put empty for no vert lines
-    "ytick_spacing" : 10,
+    # "xtick_spacing" : 10,
+    "xlabel" : 'wavelength (nm)',
+    # "ytick_spacing" : 10,
+    "ylabel" : 'abs(ff1)',
+    "yscale" : 'log',
     "horiz_percentiles" : (),
     "horiz_values" : (-15,),
-    "max_marker_color" : 'black',
-    "max_marker_width" : 1,
+    "max_marker_color" : 'red',
 }
 
 presets_combos = {
@@ -163,160 +166,39 @@ def nearest_lr(
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~main~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 if __name__ == "__main__":
     
-    # deeta = pd.read_csv(csv_in_path, index_col = 4)
-    skip_number = 1
-    deeta = np.loadtxt(csv_in_path, delimiter = ',', skiprows = skip_number)
-    with open(csv_in_path, "r") as ci:
-        for aa in range(skip_number):
-            uid_row = ci.readline()
-        uid_row = uid_row.strip().split(',')
+    deeta = pd.read_csv(csv_in_path, index_col = 0)
     
     # allmax = int(np.max(deeta[:,1:])) + 1
     allmin = -60
     # allmin = int(np.min(deeta[:,1:])) - 1
     
-    num_graphs = np.shape(deeta)[1] - 1
-    tru_ratio = (np.around((num_graphs/np.product(graphs_ratio))**0.5 * graphs_ratio)).astype(int)
+    abs_deeta_col = np.abs(deeta.columns.astype(float))
+    x,y = np.meshgrid(deeta.index, abs_deeta_col)
+    fig,ax = plt.subplots()
+    ax.pcolormesh(x, y, deeta.T)
+    # ax.semilogy()
     
-    if np.product(tru_ratio) < num_graphs:
-        tru_ratio[np.argmax(tru_ratio)] += 1
-    
-    fig, axs = plt.subplots(
-        tru_ratio[0],
-        tru_ratio[1],
-        gridspec_kw={
-            "wspace": 0.25,
-            "hspace": 0.60,
-            "bottom": 0.04,
-            "left"  : 0.04,
-            "top"   : top_margin_percent,
-            "right" : 0.96,
-            
-        },
+    ax.set(
+        xlabel = presets["xlabel"],
+        ylabel = presets["ylabel"],
+        yscale = presets["yscale"],
+        # 
     )
     
-    axs = np.atleast_2d(axs)
-    if any(np.shape(axs) != tru_ratio): 
-        axs = axs.T
-    
-    super_str = f""
-    if len(presets["horiz_percentiles"]) > 0:
-        super_str += "percentiles = " + str(tuple(np.flip(np.sort(presets["horiz_percentiles"])))) + "; "
-    if len(presets["horiz_values"]) > 0:
-        super_str += "other horiz lines = " + str(tuple(np.flip(np.sort(presets["horiz_values"])))) + "; "
-    if len(presets["verts_at"]) > 0:
-        super_str += "vertical lines = " + str(tuple(np.sort(presets["verts_at"]))) + "; "
-    if len(presets["shade_between"]) > 0:
-        super_str += "shaded area = " + str(tuple(np.sort(presets["shade_between"]))) + "; "
-    if len(presets["deebs_at"]) > 0:
-        if presets["deebs_relative"]:
-            super_str += "dB drops from max = " + str(presets["deebs_at"]) + "; "
-        else:
-            super_str += "dB drops from 0 = " + str(presets["deebs_at"]) + "; "
-    
-    
-    fig.suptitle(super_str, y = 0.99)
-    
-    for col in range(num_graphs):
-        aqses = axs[col // tru_ratio[1], col % tru_ratio[1]]
-        aqses.plot(deeta[:,0], deeta[:,col + 1])
-        
-        hp_vals = np.percentile(deeta[:,col + 1], presets["horiz_percentiles"])
-        
-        max_arg = np.argmax(deeta[:,col + 1])
-        maxcoords = (deeta[max_arg, 0], np.max(deeta[:,col + 1]))
-        title_str = f"{uid_row[col + 1]}\n"+\
-            f"max = {maxcoords}\n"
-        
-        if len(presets["horiz_percentiles"]) > 0:
-            title_str += f"{tuple(np.flip(np.sort(np.around(hp_vals, 2))))}"
-        
-        aqses.set(
-            # title = title_str,
-            ylim = (allmin, 0),
-            yticks = np.arange(0, allmin,  -abs(presets["ytick_spacing"]))
+    if presets["yscale"] == 'log':
+        ytickmat = np.arange(0,10,1) * np.atleast_2d(10**np.arange(0,4,1)).T
+        ax.set(
+            yticks = np.reshape(ytickmat , (np.size(ytickmat),)),
+            ylim = (np.min(y),np.max(y)),
         )
-        
-        aqses.vlines(
-            x = maxcoords[0],
-            ymin = maxcoords[1] - allmin/8,
-            ymax = maxcoords[1] + allmin/8,
-            color = presets["max_marker_color"],
-            linewidth = presets["max_marker_width"],
+    else:
+        ax.set(
+            yticks = ax.get_yticks()/10 + ax.get_yticks()[0]
         )
-        aqses.hlines(
-            y = maxcoords[1],
-            xmin = maxcoords[0] - (np.max(deeta[:,0]) - np.min(deeta[:,0]))/8,
-            xmax = maxcoords[0] + (np.max(deeta[:,0]) - np.min(deeta[:,0]))/8,
-            color = presets["max_marker_color"],
-            linewidth = presets["max_marker_width"],
-        )
-        
-        if len(presets["deebs_at"]) > 0:
-            drop_list = []
-            for deebski in range(len(presets["deebs_at"])):
-                if presets["deebs_relative"]:
-                    ty = deeta[:,col + 1].max() - abs(presets["deebs_at"][deebski])
-                else:
-                    ty = presets["deebs_at"][deebski]
-                
-                lar = nearest_lr(
-                    in_data_x = deeta[:,0],
-                    in_data_y = deeta[:,col + 1],
-                    target_y = ty,
-                    lin_interp = True
-                )
-                
-                aqses.vlines(
-                    x = lar[:,0],
-                    ymin = allmin,
-                    ymax = lar[:,1],
-                    colors = presets["deebs_colors"][deebski],
-                    linestyles = '--',
-                    linewidths = presets["deebs_widths"][deebski]
-                )
-                
-                drop_list.append(np.round(max(lar[:,0]) - min(lar[:,0]),2))
-            
-            title_str += str(tuple(drop_list))
-                
-                
-        if len(presets["verts_at"]) > 0:
-            aqses.vlines(
-                x = presets["verts_at"],
-                ymin = allmin,
-                ymax = 0,
-                colors = presets["verts_colors"],
-                linestyles = '--',
-                linewidths = presets["verts_widths"]
-            )
-        if len(presets["horiz_percentiles"]) > 0:
-            aqses.hlines(
-                y = hp_vals,
-                xmin = np.min(deeta[:,0]),
-                xmax = np.max(deeta[:,0]),
-                colors = 'g',
-                linestyles = '--',
-                linewidth = 1
-            )
-        if len(presets["horiz_values"]) > 0:
-            aqses.hlines(
-                y = presets["horiz_values"],
-                xmin = np.min(deeta[:,0]),
-                xmax = np.max(deeta[:,0]),
-                colors = 'g',
-                linestyles = '--',
-                linewidth = 1
-            )
-        if len(presets["shade_between"]) > 0:
-            aqses.fill_between(
-                x = presets["shade_between"],
-                y1 = allmin,
-                y2 = 0,
-                color = presets["shade_color"],
-                alpha = presets["shade_alpha"]
-            )
-        
-        aqses.set_title(title_str, fontsize = 8)
-
-    plt.show()
+    
+    ax.scatter(
+        deeta.index[np.argmax(deeta, axis = 0)],
+        abs_deeta_col,
+        marker = '+',
+        color = presets["max_marker_color"],
+    )
