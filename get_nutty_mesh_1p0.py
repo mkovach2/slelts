@@ -5,7 +5,7 @@
 
 # <description>
 
-# -------10--------20--------30--------40--------50--------60--------70--------
+#-------10--------20--------30--------40--------50--------60--------70--------
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 import pandas as pd
@@ -47,16 +47,19 @@ abs_columns = True
 abs_index = True
 use_transpose = True
 
+combo_to_use = "o_band_contours" # None to not use a preset combo
+
 presets = {
     "title" : "transmission to waveguide, dB",
-    "format" : "pcolormesh",
+    "format" : "contour",
         # "contour" for just a contour plot.
         # "both" for pcolormesh with contour.
         # defaults to pcolormesh otherwise.
-    "shade_between" : (-15.5, -14.5), # comment out for no fillski tweenor
-    "shade_color" : 'red',
-    "shade_alpha" : 0.075,
-    # "xtick_spacing" : 10,
+    # "shade_between" : (-15.5, -14.5), # comment out for no fillski tweenor
+    "shade_color" : 'black',
+    "shade_alpha" : 0.1,
+    "xtick_spacing" : 25,
+    "xtick_start" : 1125,
     # "num_xticks" : 10,
     "xlabel" : 'wavelength (nm)',
     "ytick_spacing" : 0.01,
@@ -65,6 +68,34 @@ presets = {
     "yscale" : 'linear', # choices: "lin", "log"
     "max_marker_color" : 'red',
 }
+
+presets_combos = {
+    "o_band_colormesh" : {
+        "verts_at" : (1260, 1310, 1360), # put empty for no vert lines
+        "verts_colors" : ('black',), # put empty for no vert lines
+        "verts_widths" : (0.75, 1.25, 0.75), # put empty for no vert lines
+    },
+    "c_band_colormesh" : {
+        "verts_at" : (1530, 1550, 1565), # put empty for no vert lines
+        "verts_colors" : ('black',), # put empty for no vert lines
+        "verts_widths" : (0.75, 1.25, 0.75), # put empty for no vert lines
+    },
+    "o_band_contours" : {
+        "verts_at" : (1310,), # put empty for no vert lines
+        "verts_colors" : ('black',), # put empty for no vert lines
+        "verts_widths" : (1.75,), # put empty for no vert lines
+        "shade_between" : (1260, 1360), # put empty for no fillski tweenor
+    },
+    "c_band_contours" : {
+        "verts_at" : (1550,), # put empty for no vert lines
+        "verts_colors" : ('black',), # put empty for no vert lines
+        "verts_widths" : (1.75,), # put empty for no vert lines
+        "shade_between" : (1530, 1565), # put empty for no fillski tweenor
+    }
+}
+
+if not(combo_to_use is None):
+    presets.update(presets_combos[combo_to_use])
 
 contour_presets = {
     "levels" : (-3,-4,-5,-6,-9,-12,-15,-20,-30,-40),
@@ -210,10 +241,6 @@ if __name__ == "__main__":
     deeta.columns = deeta.columns.astype(float)
     deeta.set_index(deeta.index.astype(float), inplace = True)
     
-    # allmax = int(np.max(deeta[:,1:])) + 1
-    allmin = -60
-    # allmin = int(np.min(deeta[:,1:])) - 1
-    
     if abs_columns:
         deeta.columns = np.abs(deeta.columns)
     if abs_index:
@@ -231,7 +258,7 @@ if __name__ == "__main__":
     
     
     
-    # ---- main plot
+    #---- main plot
     if not_ab_emp(presets, "format", and_eq = "contour"):
         if use_transpose:
             # why cant i just say deeta = deeta.T at the beginning?  WHO KNOWS!
@@ -257,7 +284,7 @@ if __name__ == "__main__":
     
     
     
-    # ---- x axis
+    #---- y axis
     if presets["yscale"] == 'log':
         ytickmat = np.arange(0,10,1) * np.atleast_2d(10**np.arange(0,4,1)).T
         ax.set(
@@ -284,12 +311,15 @@ if __name__ == "__main__":
     
     
     
-    # ---- xticks
+    #---- xticks
     if not("xtick_spacing" in presets.keys()):
         presets["xtick_spacing"] = (np.max(deeta.index) - np.min(deeta.index)) / presets["num_xticks"]
-        
+    
+    if not(not_ab_emp(presets, "xtick_start")):
+        presets["xtick_start"] = np.min(deeta.index)
+    
     xtick_arr = np.arange(
-        start = np.min(deeta.index),
+        start = presets["xtick_start"],
         stop = np.max(deeta.index) + presets["xtick_spacing"],
         step = presets["xtick_spacing"]
     )
@@ -304,7 +334,7 @@ if __name__ == "__main__":
     
     
     
-    # ---- max markers
+    #---- max markers
     if "max_marker_color" in presets.keys():
         ax.scatter(
             deeta.index[np.argmax(deeta, axis = 0)],
@@ -316,7 +346,7 @@ if __name__ == "__main__":
     
     
     
-    # ---- overlay contours
+    #---- overlay contours
     if not_ab_emp(presets, "format", and_eq = "both"):
         if use_transpose:
             # why cant i just say deeta = deeta.T at the beginning?  WHO KNOWS!
@@ -325,3 +355,26 @@ if __name__ == "__main__":
             deeta_c = ax.contour(x, y, deeta, **contour_presets)
             
         ax.clabel(deeta_c, **contour_label_presets)
+    
+    
+    
+    #---- more overlays
+    if len(presets["verts_at"]) > 0:
+        ax.vlines(
+            x = presets["verts_at"],
+            ymin = np.min(y),
+            ymax = np.max(y),
+            colors = presets["verts_colors"],
+            linestyles = '--',
+            linewidths = presets["verts_widths"]
+        )
+    
+    if len(presets["shade_between"]) > 0:
+        ax.fill_between(
+            x = presets["shade_between"],
+            y1 = np.min(y),
+            y2 = np.max(y),
+            color = presets["shade_color"],
+            alpha = presets["shade_alpha"]
+        )
+
