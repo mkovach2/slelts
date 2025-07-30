@@ -49,7 +49,7 @@ use_transpose = True
 
 presets = {
     "title" : "transmission to waveguide, dB",
-    "format" : "contour",
+    "format" : "pcolormesh",
         # "contour" for just a contour plot.
         # "both" for pcolormesh with contour.
         # defaults to pcolormesh otherwise.
@@ -57,6 +57,7 @@ presets = {
     "shade_color" : 'red',
     "shade_alpha" : 0.075,
     # "xtick_spacing" : 10,
+    # "num_xticks" : 10,
     "xlabel" : 'wavelength (nm)',
     "ytick_spacing" : 0.01,
     # "num_yticks" : 10,
@@ -221,7 +222,6 @@ if __name__ == "__main__":
     x,y = np.meshgrid(deeta.index, deeta.columns)
     fig,ax = plt.subplots()
     
-    
     if not_ab_emp(presets, "format", and_eq = "both"):
         contour_presets.update(both_contour_presets)
     
@@ -230,6 +230,8 @@ if __name__ == "__main__":
     # *pathetic bawling* ValueError: Contour levels must be increasing
     
     
+    
+    # ---- main plot
     if not_ab_emp(presets, "format", and_eq = "contour"):
         if use_transpose:
             # why cant i just say deeta = deeta.T at the beginning?  WHO KNOWS!
@@ -253,6 +255,9 @@ if __name__ == "__main__":
         title = presets["title"],
     )
     
+    
+    
+    # ---- x axis
     if presets["yscale"] == 'log':
         ytickmat = np.arange(0,10,1) * np.atleast_2d(10**np.arange(0,4,1)).T
         ax.set(
@@ -277,6 +282,29 @@ if __name__ == "__main__":
         if yslashn.lower() == 'y':
             ax.set_yticks(ytick_arr)
     
+    
+    
+    # ---- xticks
+    if not("xtick_spacing" in presets.keys()):
+        presets["xtick_spacing"] = (np.max(deeta.index) - np.min(deeta.index)) / presets["num_xticks"]
+        
+    xtick_arr = np.arange(
+        start = np.min(deeta.index),
+        stop = np.max(deeta.index) + presets["xtick_spacing"],
+        step = presets["xtick_spacing"]
+    )
+    
+    if np.size(xtick_arr) > 200:
+        yslashn = input(f"number of xticks = {np.size(xtick_arr)}.  really (y/N)? ")
+    else:
+        yslashn = 'y'
+    
+    if yslashn.lower() == 'y':
+        ax.set_xticks(xtick_arr)
+    
+    
+    
+    # ---- max markers
     if "max_marker_color" in presets.keys():
         ax.scatter(
             deeta.index[np.argmax(deeta, axis = 0)],
@@ -286,6 +314,9 @@ if __name__ == "__main__":
         )
         ax.legend(("row maximum",))
     
+    
+    
+    # ---- overlay contours
     if not_ab_emp(presets, "format", and_eq = "both"):
         if use_transpose:
             # why cant i just say deeta = deeta.T at the beginning?  WHO KNOWS!
