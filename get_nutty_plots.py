@@ -20,7 +20,7 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
         
     csv_in_path = lonj +\
-        "20250602_apo_+8_g2f11_o_band/ov_curiosity_1_pd1/grouped/by_uid.csv"
+        "20250602_apo_+8_g2f11_o_band/ov_curiosity_2_pd0/grouped/no_sweep = 1.csv"
         # "20250602_apo_+8_g2f11_o_band/ov_curiosity_1_pd1/grouped/no_sweep = 1.csv"
         # "20250321_fab_var_study/20250528_stage_alt9/grouped/no_sweep = 1.csv"
         # "20250611_apo_combined_proposal/g2f11_ov/ccd/grouped/no_sweep = 1.csv"
