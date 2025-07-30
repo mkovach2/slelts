@@ -49,7 +49,10 @@ use_transpose = True
 
 presets = {
     "title" : "transmission to waveguide, dB",
-    # "format" : "contour", # "both" for pcolormesh with contour. defaults to pcolormesh otherwise.
+    "format" : "contour",
+        # "contour" for just a contour plot.
+        # "both" for pcolormesh with contour.
+        # defaults to pcolormesh otherwise.
     "shade_between" : (-15.5, -14.5), # comment out for no fillski tweenor
     "shade_color" : 'red',
     "shade_alpha" : 0.075,
@@ -63,8 +66,26 @@ presets = {
 }
 
 contour_presets = {
-    "levels" : np.arange(-32, -4, 4)
+    "levels" : (-3,-4,-5,-6,-9,-12,-15,-20,-30,-40),
+    # "levels" : np.arange(-32, 0, 4),
+    "cmap" : "turbo",
 }
+
+both_contour_presets = {
+    "levels" : (-15,),
+    "colors" : ('black',),
+    "linewidths": (1,)
+    # "linestyle" : 'solid',
+    # "negative_linestyle" : 'solid',
+}
+
+contour_label_presets = {
+    "fontsize" : 9,
+    "inline" : True,
+    "inline_spacing" : 0,
+}
+
+plt.rcParams['contour.negative_linestyle'] = 'solid'
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -200,12 +221,24 @@ if __name__ == "__main__":
     x,y = np.meshgrid(deeta.index, deeta.columns)
     fig,ax = plt.subplots()
     
+    
+    if not_ab_emp(presets, "format", and_eq = "both"):
+        contour_presets.update(both_contour_presets)
+    
+    contour_presets["levels"] = np.sort(contour_presets["levels"])
+    # this is what plt sounds like:
+    # *pathetic bawling* ValueError: Contour levels must be increasing
+    
+    
     if not_ab_emp(presets, "format", and_eq = "contour"):
         if use_transpose:
             # why cant i just say deeta = deeta.T at the beginning?  WHO KNOWS!
-            ax.contour(x, y, deeta.T, **contour_presets)
+            deeta_c = ax.contour(x, y, deeta.T, **contour_presets)
         else:
-            ax.contour(x, y, deeta, **contour_presets)
+            deeta_c = ax.contour(x, y, deeta, **contour_presets)
+        
+        ax.clabel(deeta_c, **contour_label_presets)
+        
     else:
         if use_transpose:
             # why cant i just say deeta = deeta.T at the beginning?  WHO KNOWS!
@@ -244,15 +277,19 @@ if __name__ == "__main__":
         if yslashn.lower() == 'y':
             ax.set_yticks(ytick_arr)
     
-    ax.scatter(
-        deeta.index[np.argmax(deeta, axis = 0)],
-        deeta.columns,
-        marker = '+',
-        color = presets["max_marker_color"],
-    )
+    if "max_marker_color" in presets.keys():
+        ax.scatter(
+            deeta.index[np.argmax(deeta, axis = 0)],
+            deeta.columns,
+            marker = '+',
+            color = presets["max_marker_color"],
+        )
     
-    # if "shade_between" in presets.keys():
-    #     truth_mat = np.logical_and(
-    #         min(presets["shade_between"]) < deeta,
-    #         deeta < max(presets["shade_between"])
-    #     )
+    if not_ab_emp(presets, "format", and_eq = "both"):
+        if use_transpose:
+            # why cant i just say deeta = deeta.T at the beginning?  WHO KNOWS!
+            deeta_c = ax.contour(x, y, deeta.T, **contour_presets)
+        else:
+            deeta_c = ax.contour(x, y, deeta, **contour_presets)
+            
+        ax.clabel(deeta_c, **contour_label_presets)
