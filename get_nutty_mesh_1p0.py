@@ -18,10 +18,15 @@ import matplotlib.pyplot as plt
 if True:
     lonj = "C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/"+\
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
-        
+    
+    csv_str = ''
+    # csv_str = '-12_dB_bw'
+    
     csv_in_path = lonj +\
-        "20250602_apo_+8_g2f11_o_band/ov_curiosity_2_pd0/grouped/2axis.csv"
-        # "20250602_apo_+8_g2f11_o_band/ov_curiosity_1_pd1/grouped/no_sweep = 1.csv"
+        f"20250602_apo_+8_g2f11_o_band/ov_procedure_test/{csv_str}.csv"
+        # "20250602_apo_+8_g2f11_o_band/ov_curiosity_3_ff0_adj_ff1/grouped/2axis.csv"
+        # "20250602_apo_+8_g2f11_o_band/ov_curiosity_3_ff0/grouped/2axis.csv"
+        # "20250602_apo_+8_g2f11_o_band/ov_curiosity_1_pd1/grouped/2axis.csv"
         # "20250321_fab_var_study/20250528_stage_alt9/grouped/no_sweep = 1.csv"
         # "20250611_apo_combined_proposal/g2f11_ov/ccd/grouped/no_sweep = 1.csv"
         # "20250607_apodized_+8_TEOS_o_band_vert/stage_4/grouped/54636_thru_55738.csv"
@@ -43,31 +48,43 @@ top_margin_percent = 0.965 # a good top for graphs_ratio = (2,1)
 plt.style.use("bmh")
 # plt.style.use("seaborn-v0_8")
 
-abs_columns = True
-abs_index = True
+abs_columns = False
+abs_index = False
 use_transpose = True
 
-combo_to_use = "o_band_contours" # None to not use a preset combo
+# combo_to_use = "o_band_contours" # None to not use a preset combo
+combo_to_use = None
 
 presets = {
-    "title" : "transmission to waveguide, dB",
-    "format" : "contour",
+    # "title" : "effective_center, nm",
+    # "title" : "transmission to waveguide, dB",
+    # "title" : "transmission to waveguide, dB (pd0 = 0.779, ff1 = -0.0371)",
+    # "title" : "transmission to waveguide, dB (pd0 = 0.7353)",
+    "format" : "pcolormesh",
         # "contour" for just a contour plot.
         # "both" for pcolormesh with contour.
         # defaults to pcolormesh otherwise.
     # "shade_between" : (-15.5, -14.5), # comment out for no fillski tweenor
     "shade_color" : 'black',
     "shade_alpha" : 0.1,
-    "xtick_spacing" : 25,
-    "xtick_start" : 1125,
+    "xtick_spacing" : 0.01,
+    # "xtick_start" : 1125,
     # "num_xticks" : 10,
-    "xlabel" : 'wavelength (nm)',
-    "ytick_spacing" : 0.01,
-    # "num_yticks" : 10,
-    "ylabel" : 'pd0',
-    "yscale" : 'linear', # choices: "lin", "log"
+    "xlabel" : 'pd0 (um)',
+    # "xlabel" : 'wavelength (nm)',
+    # "ytick_spacing" : 0.01,
+    "num_yticks" : 9,
+    "ylabel" : 'ff1 (um^-1)',
+    # "ylabel" : 'pd1',
+    "yscale" : 'linear', # choices: "linear", "log"
     "max_marker_color" : 'red',
 }
+
+if abs_columns:
+    presets["ylabel"] = "abs(" + presets["ylabel"] + ")"
+
+if abs_index:
+    presets["xlabel"] = "abs(" + presets["xlabel"] + ")"
 
 presets_combos = {
     "o_band_colormesh" : {
@@ -98,8 +115,11 @@ if not(combo_to_use is None):
     presets.update(presets_combos[combo_to_use])
 
 contour_presets = {
-    "levels" : (-3,-4,-5,-6,-9,-12,-15,-20,-30,-40),
-    # "levels" : np.arange(-32, 0, 4),
+    # "levels" : (-2,-2.5,-3,-3.5,-4,-5,-6,-9,-12,-15,-20,-30,-40),
+    "levels" : np.arange(40, 160, 10),
+    # "levels" : np.arange(1320, 1450, 10),
+    # "levels" : np.hstack((np.arange(-50, -20, 5),np.arange(-20, -10, 1))),
+    # "levels" : np.hstack((np.arange(-50, -10, 5),np.arange(-10, 0, 1))),
     "cmap" : "turbo",
 }
 
@@ -118,6 +138,9 @@ contour_label_presets = {
 }
 
 plt.rcParams['contour.negative_linestyle'] = 'solid'
+
+if not("title" in presets.keys()):
+    presets["title"] = csv_str
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~functions~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -337,7 +360,7 @@ if __name__ == "__main__":
     #---- max markers
     if "max_marker_color" in presets.keys():
         ax.scatter(
-            deeta.index[np.argmax(deeta, axis = 0)],
+            deeta.index[np.nanargmax(deeta, axis = 0)],
             deeta.columns,
             marker = '+',
             color = presets["max_marker_color"],
@@ -359,22 +382,24 @@ if __name__ == "__main__":
     
     
     #---- more overlays
-    if len(presets["verts_at"]) > 0:
-        ax.vlines(
-            x = presets["verts_at"],
-            ymin = np.min(y),
-            ymax = np.max(y),
-            colors = presets["verts_colors"],
-            linestyles = '--',
-            linewidths = presets["verts_widths"]
-        )
+    if "verts_at" in presets.keys():
+        if len(presets["verts_at"]) > 0:
+            ax.vlines(
+                x = presets["verts_at"],
+                ymin = np.min(y),
+                ymax = np.max(y),
+                colors = presets["verts_colors"],
+                linestyles = '--',
+                linewidths = presets["verts_widths"]
+            )
     
-    if len(presets["shade_between"]) > 0:
-        ax.fill_between(
-            x = presets["shade_between"],
-            y1 = np.min(y),
-            y2 = np.max(y),
-            color = presets["shade_color"],
-            alpha = presets["shade_alpha"]
-        )
+    if "shade_between" in presets.keys():
+        if len(presets["shade_between"]) > 0:
+            ax.fill_between(
+                x = presets["shade_between"],
+                y1 = np.min(y),
+                y2 = np.max(y),
+                color = presets["shade_color"],
+                alpha = presets["shade_alpha"]
+            )
 

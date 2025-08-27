@@ -20,12 +20,16 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
         
     csv_in_path = lonj +\
-        "20250602_apo_+8_g2f11_o_band/ov_curiosity_2_pd0/grouped/no_sweep = 1.csv"
-        # "20250602_apo_+8_g2f11_o_band/ov_curiosity_1_pd1/grouped/no_sweep = 1.csv"
+        "20250602_apo_+8_g2f11_o_band/ov_vars_proc/st2_hi_right/grouped/no_sweep = 1.csv"
+        # "20250519_apo_+8_g2f11_c_band/vert_stage_2_advanced_trap_remix/stage_2_atr_6249_thru_6601.csv"
+        # "20250602_apo_+8_g2f11_o_band/horiz_st2_o_band_power_moves/grouped/no_sweep = 1.csv"
+        # "20250602_apo_+8_g2f11_o_band/ov_procedure_test/grouped/no_sweep = 1.csv"
+        # "20250519_apo_+8_g2f11_c_band/horiz_stage_2/grouped/11296678_thru_11297463.csv"
+        # "20250602_apo_+8_g2f11_o_band/vert_st5_o_band/grouped/nosweep_snorted.csv"
+        # "20250602_apo_+8_g2f11_o_band/ov_curi_procedural/stage_1/grouped/sorted.csv"
         # "20250321_fab_var_study/20250528_stage_alt9/grouped/no_sweep = 1.csv"
         # "20250611_apo_combined_proposal/g2f11_ov/ccd/grouped/no_sweep = 1.csv"
         # "20250607_apodized_+8_TEOS_o_band_vert/stage_4/grouped/54636_thru_55738.csv"
-        # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/grouped/96678_thru_97182.csv"
         # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/86450_thru_87401.csv"
         # "20250602_apodized_+8_g2f11_o_band/horiz_st2_o_band/grouped/6692_thru_7240.csv"
 
@@ -34,11 +38,12 @@ else:
         "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
 
 
-graphs_ratio = np.array((2.0,1.0)) # num rows, num columns
+graphs_ratio = np.array((2,1)) # num rows, num columns
 
 # top_margin_percent = 0.95
 # top_margin_percent = 0.80 # good for column-favoring ratios like (1, 7)
-top_margin_percent = 0.965 # a good top for graphs_ratio = (2,1)
+# top_margin_percent = 0.965 # a good top for graphs_ratio = (2,1)
+top_margin_percent = 0.95 # a good top for graphs_ratio = (2,1)
 
 plt.style.use("bmh")
 # plt.style.use("seaborn-v0_8")
@@ -51,9 +56,10 @@ presets = {
     "verts_widths" : (1.75,), # put empty for no vert lines
     "shade_between" : (1260, 1360), # put empty for no fillski tweenor
     "shade_color" : 'blue',
-    "shade_alpha" : 0.075,
-    "deebs_relative" : True,
-    "deebs_at" : (-3,-9), # put empty for no deebs lines
+    "shade_alpha" : 0.1,
+    # "shade_alpha" : 0.075,
+    "deebs_relative" : False,
+    "deebs_at" : (-15,), # put empty for no deebs lines
     "deebs_colors" : ('black','orange'), # put empty for no vert lines
     "deebs_widths" : (1,1), # put empty for no vert lines
     "ytick_spacing" : 10,
@@ -75,6 +81,9 @@ presets_combos = {
         "verts_colors" : ('red',), # put empty for no vert lines
         "verts_widths" : (1.75,), # put empty for no vert lines
         "shade_between" : (1530, 1565), # put empty for no fillski tweenor
+        "shade_between_2" : (1565, 1625), # L band.  comment out for no L band shading
+        "shade_color_2" : 'orange',
+        "shade_alpha_2" :  0.1,
     }
 }
 
@@ -315,6 +324,26 @@ if __name__ == "__main__":
                 y2 = 0,
                 color = presets["shade_color"],
                 alpha = presets["shade_alpha"]
+            )
+        
+        if "shade_between_2" in presets.keys():
+            
+            if "shade_color_2" in presets.keys():
+                shade_color_2 = presets["shade_color_2"]
+            else:
+                shade_color_2 = presets["shade_color"]
+            
+            if "shade_alpha_2" in presets.keys():
+                shade_alpha_2 = presets["shade_alpha_2"]
+            else:
+                shade_alpha_2 = presets["shade_alpha"]
+            
+            aqses.fill_between(
+                x = presets["shade_between_2"],
+                y1 = allmin,
+                y2 = 0,
+                color = shade_color_2,
+                alpha = shade_alpha_2
             )
         
         aqses.set_title(title_str, fontsize = 8)

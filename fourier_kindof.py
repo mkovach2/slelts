@@ -2,23 +2,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 pi = np.pi
 
-filepath = "C:/Users/miles.HYPERLIGHT/Desktop/sneep.csv"
+filepath = "C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/General - Products/+NewFileSystem/Device Components/Grating Coupler/20250611_apo_combined_proposal/g2f11_ov/ccd/grouped/no_sweep = 1.csv"
+# filepath = "C:/Users/miles.HYPERLIGHT/Desktop/sneep.csv"
 # filepath = "C:/Users/miles.HYPERLIGHT/Desktop/high-vibe.csv"
 use_stem = True
 indata = np.loadtxt(filepath,delimiter=',',skiprows=1)
 time_col = True
 common_axes = True # uses the input axis for the output curves
-export_csv = True
+export_csv = False
 csv_path = "C:/Users/miles.HYPERLIGHT/Desktop/stage_8a_top10_ez_fft_2comp.csv"
 # csv_path = "C:/Users/miles.HYPERLIGHT/Desktop/outie_high_2.csv"
 
 # f_cutoff = 0.01 # to use as a kind of DC block
 # range_filter = (362,364)
 # range_filter = (6e-5, 6.4e-5)
-range_filter = (0.03,)
+range_filter = (0.02,)
 filter_mode = "lo"
 # enter 1 number for a HPF, a range for anything else
-delta = 7.27
+delta = 0.001
 # delta = 1
 
 # plotmax = min((np.shape(indata)[0]), f_cutoff*2)
@@ -33,14 +34,14 @@ colors = ('r','g','b','orange','black')
 fft_presets = {
     "xscale" : 'log',
     # "yscale" : 'log',
-    "xlim" : (0, 1.55)
+    "xlim" : (0, 0.2)
 }
 
 biggest_array = None
 header_str = ""
 
-# for column in (1,):
-for column in np.arange(1,np.shape(indata)[1]):
+for column in (1,2):
+# for column in np.arange(1,np.shape(indata)[1]):
     current_color = colors[(column-1) % len(colors)]
     
     if time_col:
