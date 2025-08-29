@@ -20,7 +20,7 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
         
     csv_in_path = lonj +\
-        "20250602_apo_+8_g2f11_o_band/ov_vars_proc/st2_hi_right/grouped/no_sweep = 1.csv"
+        "20250602_apo_+8_g2f11_o_band/ov_vars_proc/st3_1310_lo_ctr/grouped/no_sweep = 1.csv"
         # "20250519_apo_+8_g2f11_c_band/vert_stage_2_advanced_trap_remix/stage_2_atr_6249_thru_6601.csv"
         # "20250602_apo_+8_g2f11_o_band/horiz_st2_o_band_power_moves/grouped/no_sweep = 1.csv"
         # "20250602_apo_+8_g2f11_o_band/ov_procedure_test/grouped/no_sweep = 1.csv"
@@ -38,7 +38,10 @@ else:
         "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
 
 
-graphs_ratio = np.array((2,1)) # num rows, num columns
+graphs_ratio = np.array((7,None)) # num rows, num columns.
+    # enter "None" for either rows or columns to force the other dimension.
+    # eg graphs_ratio = np.array((10,0)) will give a plot with subplots in 
+    # 10 rows, and however many columns it takes to include each data set.
 
 # top_margin_percent = 0.95
 # top_margin_percent = 0.80 # good for column-favoring ratios like (1, 7)
@@ -185,7 +188,12 @@ if __name__ == "__main__":
     # allmin = int(np.min(deeta[:,1:])) - 1
     
     num_graphs = np.shape(deeta)[1] - 1
-    tru_ratio = (np.around((num_graphs/np.product(graphs_ratio))**0.5 * graphs_ratio)).astype(int)
+    if graphs_ratio [0] is None:
+        tru_ratio = np.around((num_graphs / graphs_ratio[1], graphs_ratio[1])).astype(int)
+    elif graphs_ratio [1] is None:
+        tru_ratio = np.around((graphs_ratio[0], num_graphs / graphs_ratio[0])).astype(int)
+    else:
+        tru_ratio = (np.around((num_graphs/np.product(graphs_ratio))**0.5 * graphs_ratio)).astype(int)
     
     if np.product(tru_ratio) < num_graphs:
         tru_ratio[np.argmax(tru_ratio)] += 1
