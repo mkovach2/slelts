@@ -20,7 +20,7 @@ if True:
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
         
     csv_in_path = lonj +\
-        "20250602_apo_+8_g2f11_o_band/ov_vars_proc/st3_1310_lo_ctr/grouped/no_sweep = 1.csv"
+        "20250602_apo_+8_g2f11_o_band/ov_vars_proc/st3_bw_hi_ctr/grouped/no_sweep = 1.csv"
         # "20250519_apo_+8_g2f11_c_band/vert_stage_2_advanced_trap_remix/stage_2_atr_6249_thru_6601.csv"
         # "20250602_apo_+8_g2f11_o_band/horiz_st2_o_band_power_moves/grouped/no_sweep = 1.csv"
         # "20250602_apo_+8_g2f11_o_band/ov_procedure_test/grouped/no_sweep = 1.csv"
@@ -38,7 +38,7 @@ else:
         "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
 
 
-graphs_ratio = np.array((7,None)) # num rows, num columns.
+graphs_ratio = np.array((None, 4)) # num rows, num columns.
     # enter "None" for either rows or columns to force the other dimension.
     # eg graphs_ratio = np.array((10,0)) will give a plot with subplots in 
     # 10 rows, and however many columns it takes to include each data set.
@@ -101,6 +101,32 @@ def lin_interp_func(a_in, a0, a1, b0, b1):
     b = (a_in - a0) * (b1 - b0) / (a1 - a0) + b0
     return float(b)
 
+
+def ratio_to_shape(
+    ratio_in: tuple[float, float]
+    | list[float, float]
+    | np.ndarray,  # num of rows, num of cols
+    num_devices: int | float,  # but should be int, lets be real
+):
+    # convert a target ratio and number of devices to actual shape in the form (rows, columns)
+    if not (isinstance(ratio_in, np.ndarray)):
+        ratio_in = np.array(ratio_in)
+
+    grid_shape = np.zeros(np.shape(ratio_in))
+    big = np.argmax(ratio_in)
+    lil = (big + 1) % 2
+
+    grid_shape[big] = (num_devices * ratio_in[big] / ratio_in[lil]) ** 0.5
+    grid_shape[lil] = grid_shape[big] * ratio_in[lil] / ratio_in[big]
+    max_remainder = np.argmax(grid_shape - np.floor(grid_shape))
+    grid_shape = (np.floor(grid_shape)).astype(int)
+
+    if np.prod(grid_shape) < num_devices:
+        if grid_shape[0] == grid_shape[1]:
+            grid_shape[(max_remainder + 1) % 2] += 1
+        grid_shape[max_remainder] += 1
+
+    return grid_shape
 
 
 def nearest_lr(
@@ -193,11 +219,14 @@ if __name__ == "__main__":
     elif graphs_ratio [1] is None:
         tru_ratio = np.around((graphs_ratio[0], num_graphs / graphs_ratio[0])).astype(int)
     else:
-        tru_ratio = (np.around((num_graphs/np.product(graphs_ratio))**0.5 * graphs_ratio)).astype(int)
-    
+        tru_ratio = ratio_to_shape(
+            ratio_in = graphs_ratio,
+            num_devices = num_graphs
+        )
+
     if np.product(tru_ratio) < num_graphs:
         tru_ratio[np.argmax(tru_ratio)] += 1
-    
+
     fig, axs = plt.subplots(
         tru_ratio[0],
         tru_ratio[1],
