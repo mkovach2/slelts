@@ -15,8 +15,10 @@ if __name__ == "__main__":
   uIn = os.path.abspath(uIn.strip('\"')).replace('\\','/')
 
 for numgur in range(1,10):
-    oldStr = f"p{numgur}u"
-    newStr = f"p{numgur}0u"
+    # oldStr = f"p{numgur}u"
+    # newStr = f"p{numgur}0u"
+    oldStr = f'_{numgur}_'
+    newStr = f'_0{numgur}_'
    
     err = 0
     
