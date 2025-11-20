@@ -19,10 +19,10 @@ pd.io.formats.excel.ExcelFormatter.header_style = None
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-win_cmd = True
+win_cmd = False
 save_outputs = True
 
-load_dir = 'T:/Device Components/Grating Coupler/20241010_PoR_t3d/2d_2'
+load_dir = '/home/miles/Desktop/MX0095A_FC3R5/g2f11/ov_stats'
 
 save_dir = load_dir
 

@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-if True:
+if False:
     lonj = "C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/"+\
         "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
         
@@ -34,8 +34,9 @@ if True:
         # "20250602_apodized_+8_g2f11_o_band/horiz_st2_o_band/grouped/6692_thru_7240.csv"
 
 else:
-    csv_in_path = "T:/Device Components/Grating Coupler/"+\
-        "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
+    # csv_in_path = "T:/Device Components/Grating Coupler/"+\
+    #     "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
+    csv_in_path = '/home/miles/Desktop/MX0095A_FC3R5/g2f11/cv_stats/cv_'
 
 
 graphs_ratio = np.array((None, 4)) # num rows, num columns.
