@@ -103,6 +103,7 @@ contour_label_presets = {
     "inline_spacing" : 0,
 }
 
+RES_LIMIT = 0.15
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~main~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -178,10 +179,23 @@ if __name__ == "__main__":
         )
         
         for num, row in deeta.iterrows():
-            if row['linewidth'] >= 0.18:
+            if row['linewidth'] >= RES_LIMIT:
                 z.at[row[column_for_y], row[column_for_x]] = row[columns_to_use[col]]
         
         deeta_p = aqses.pcolormesh(x, y, z.astype(float), cmap = 'turbo')
+
+        for num, row in deeta.iterrows():
+            if row['linewidth'] >= RES_LIMIT:
+                aqses.text(
+                    row[column_for_x],
+                    row[column_for_y],
+                    np.round(row[columns_to_use[col]], decimals=3),
+                    ha='center',
+                    va='center',
+                    size=8,
+                    color='black',
+                    backgroundcolor='white',
+                )
         
         # deeta_c = aqses.contour(x, y, z.astype(float), **contour_presets)
         # aqses.clabel(deeta_c, **contour_label_presets)
