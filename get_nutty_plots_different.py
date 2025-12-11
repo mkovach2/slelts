@@ -47,21 +47,22 @@ if False:
 
 else:
     lonj = '/mnt/T/Device Components/Grating Coupler/' + \
-           '20251126_gc_1033/rd3/processed/'
+           '20251126_gc_1033/rd1/processed/'
 
     csv_in_path = lonj + \
-                  "jmp_data_13056997_loss.csv"
+                  "jmp_data_13036610_loss_more.csv" # rd 1
+                  # "jmp_data_13056997_loss.csv" # rd 3
                   # "transmission_dB.csv"
     
-    csv_str = '20251126_gc_1033 rd3'
+    csv_str = '20251126_gc_1033 rd1'
 
 
-columns_to_use = ('min', 'avg', 'max', 'value_at_1033')
-# columns_to_use = ()
-columns_to_exclude = ()
+columns_to_use = ['apparent_center', 'avg', 'max', 'value_at_1033']
+# columns_to_use = []
+columns_to_exclude = []
 # if columns_to_use is an empty list, all columns will be selected except those
 # in columns_to_exclude.
-
+apparent_center_diff_wl = 1033
 
 
 
@@ -122,6 +123,11 @@ if __name__ == "__main__":
     
     if 'linewidth' not in deeta.columns:
         deeta['linewidth'] = deeta['pd'] * deeta['ff']
+    
+    if 'apparent_center' in columns_to_use or 'apparent_center' not in columns_to_exclude:
+        deeta['neg_abs_appc_diff'] = -abs(deeta['apparent_center'] - apparent_center_diff_wl)
+        columns_to_use.remove('apparent_center')
+        columns_to_use.append('neg_abs_appc_diff')
     
     # if len(columns_to_use) > 0:
     #     num_graphs = len(columns_to_use)
