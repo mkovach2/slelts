@@ -15,12 +15,15 @@ import matplotlib.pyplot as plt
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-if False:
-    lonj = "C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/"+\
-        "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
-        
+if True:
+    # lonj = "C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/"+\
+    #     "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
+    
+    lonj = '/home/miles/Documents/T_local/device_components/grating_coupler/'+\
+           '20251126_gc_1033/rd3/processed/grouped/'
+    
     csv_in_path = lonj +\
-        "20250602_apo_+8_g2f11_o_band/ov_vars_proc/st3_bw_hi_ctr/grouped/no_sweep = 1.csv"
+        "transmission_dB.csv"
         # "20250519_apo_+8_g2f11_c_band/vert_stage_2_advanced_trap_remix/stage_2_atr_6249_thru_6601.csv"
         # "20250602_apo_+8_g2f11_o_band/horiz_st2_o_band_power_moves/grouped/no_sweep = 1.csv"
         # "20250602_apo_+8_g2f11_o_band/ov_procedure_test/grouped/no_sweep = 1.csv"
@@ -39,7 +42,7 @@ else:
     csv_in_path = '/home/miles/Desktop/MX0095A_FC3R5/g2f11/cv_stats/cv_'
 
 
-graphs_ratio = np.array((None, 4)) # num rows, num columns.
+graphs_ratio = np.array((2, 1)) # num rows, num columns.
     # enter "None" for either rows or columns to force the other dimension.
     # eg graphs_ratio = np.array((10,0)) will give a plot with subplots in 
     # 10 rows, and however many columns it takes to include each data set.
@@ -52,13 +55,14 @@ top_margin_percent = 0.95 # a good top for graphs_ratio = (2,1)
 plt.style.use("bmh")
 # plt.style.use("seaborn-v0_8")
 
-combo_to_use = "o_band" # None to not use a preset combo
+combo_to_use = None # None to not use a preset combo
+# combo_to_use = "o_band" # None to not use a preset combo
 
 presets = {
-    "verts_at" : (1310,), # put empty for no vert lines
+    "verts_at" : (1033,), # put empty for no vert lines
     "verts_colors" : ('red',), # put empty for no vert lines
     "verts_widths" : (1.75,), # put empty for no vert lines
-    "shade_between" : (1260, 1360), # put empty for no fillski tweenor
+    "shade_between" : (1023, 1043), # put empty for no fillski tweenor
     "shade_color" : 'blue',
     "shade_alpha" : 0.1,
     # "shade_alpha" : 0.075,
@@ -211,7 +215,7 @@ if __name__ == "__main__":
         uid_row = uid_row.strip().split(',')
     
     # allmax = int(np.max(deeta[:,1:])) + 1
-    allmin = -60
+    allmin = -55
     # allmin = int(np.min(deeta[:,1:])) - 1
     
     num_graphs = np.shape(deeta)[1] - 1

@@ -143,11 +143,12 @@ if False:
         # "20250602_apodized_+8_g2f11_o_band/horiz_st2_o_band/grouped/6692_thru_7240.csv"
 
 else:
-    lonj = '/mnt/T/Device Components/Grating Coupler/' + \
-           '20251126_gc_1033/rd2/processed/grouped/'
+    lonj = '/home/miles/Documents/T_local/device_components/grating_coupler/' + \
+           '20251126_gc_1033/rd2/processed/'
 
     csv_in_path = lonj + \
-                  "transmission_dB.csv"
+                  "jmp_data_13037635_xmit_more.csv"
+                  # "transmission_dB.csv"
     
     csv_str = '20251126_gc_1033 rd2'
 
@@ -169,6 +170,7 @@ use_transpose = True
 combo_to_use = None
 
 presets = {
+    "title" : "20251126_gc_1033 rd2",
     # "title" : "effective_center, nm",
     # "title" : "transmission to waveguide, dB",
     # "title" : "transmission to waveguide, dB (pd0 = 0.779, ff1 = -0.0371)",
@@ -265,23 +267,8 @@ if __name__ == "__main__":
     
     deeta = pd.read_csv(csv_in_path, index_col = 0)
     
-    deeta.columns = deeta.columns.astype(float)
-    deeta.set_index(deeta.index.astype(float), inplace = True)
-    
-    if abs_columns:
-        deeta.columns = np.abs(deeta.columns)
-    if abs_index:
-        deeta.set_index(np.abs(deeta.index), inplace = True)
-    
-    x,y = np.meshgrid(deeta.index, deeta.columns)
-    fig,ax = plt.subplots()
-    
-    if not_ab_emp(presets, "format", and_eq = "both"):
-        contour_presets.update(both_contour_presets)
-    
-    contour_presets["levels"] = np.sort(contour_presets["levels"])
-    # this is what plt sounds like:
-    # *pathetic bawling* ValueError: Contour levels must be increasing
+    column_for_x = 'pd'
+    column_for_y = 'ff'
     
     
     
