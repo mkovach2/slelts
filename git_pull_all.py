@@ -64,18 +64,12 @@ if __name__ == "__main__":
                 text=True,
             ).stdout
             
-            # print(f"outputski_split[:10] = {outputski_split[:10]}")
             outputski_split = outputski.split("\n")
             details_list.append([repo, "", ""])
             for line in outputski_split:
                 if line[:10].lower() == "on branch ":
-                    # print(f"branch = {outputski_split[0][10:]}")
                     details_list[-1][1] = outputski_split[0][10:]
-                    # print(f"details_list[-1] = {details_list[-1]}")
-                # elif line[:9].lower() == "on branch ":
-                #     print("fuque")
                 
-                # print(outputski_split[1][:25].lower())
                 if outputski_split[1][:25].lower() != 'your branch is up to date':
                     details_list[-1][2] = outputski
                     utd_status = True
@@ -84,8 +78,6 @@ if __name__ == "__main__":
                 
             if utd_status:
                 not_utd_list.append(details_list[-1])
-                # if outputski_split[0][:10].lower() == "on branch ":
-                    # Your branch is up to date
     
     if len(not_utd_list) > 0:
         utd_str = f'\nin the folder\n{gitdir}\n\nthese repos are NOT listed as '+\
