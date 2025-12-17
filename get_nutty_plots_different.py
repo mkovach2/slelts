@@ -46,18 +46,24 @@ if False:
         # "20250602_apodized_+8_g2f11_o_band/horiz_st2_o_band/grouped/6692_thru_7240.csv"
 
 else:
-    lonj = '/mnt/T/Device Components/Grating Coupler/' + \
-           '20251126_gc_1033/rd1/processed/'
-
-    csv_in_path = lonj + \
-                  "jmp_data_13036610_loss_more.csv" # rd 1
-                  # "jmp_data_13056997_loss.csv" # rd 3
-                  # "transmission_dB.csv"
+    round_str = 'rd4'
     
-    csv_str = '20251126_gc_1033 rd1'
+    lonj = '/mnt/T/Device Components/Grating Coupler/' + \
+           f'20251126_gc_1033/{round_str}/processed/'
+    
+    if round_str == 'rd1':
+        csv_in_path = lonj + "jmp_data_13036610_loss_more.csv"
+    elif round_str == 'rd2':
+        csv_in_path = lonj + "jmp_data_13037635_xmit_more.csv"
+    elif round_str == 'rd3':
+        csv_in_path = lonj + "jmp_data_13056997_loss.csv"
+    elif round_str == 'rd4':
+        csv_in_path = lonj + "jmp_data_13186843_br.csv"
+    
+    csv_str = f'20251126_gc_1033 {round_str}'
 
 
-columns_to_use = ['apparent_center', 'avg', 'max', 'value_at_1033']
+columns_to_use = ['apparent_center', 'avg', 'max', 'value_at_1033', 'uid', 'linewidth']
 # columns_to_use = []
 columns_to_exclude = []
 # if columns_to_use is an empty list, all columns will be selected except those
@@ -66,7 +72,7 @@ apparent_center_diff_wl = 1033
 
 
 
-graphs_ratio = np.array((1, 1)) # num rows, num columns.
+graphs_ratio = np.array((3, 2)) # num rows, num columns.
     # enter "None" for either rows or columns to force the other dimension.
     # eg graphs_ratio = np.array((10,0)) will give a plot with subplots in 
     # 10 rows, and however many columns it takes to include each data set.
@@ -190,15 +196,22 @@ if __name__ == "__main__":
         
         deeta_p = aqses.pcolormesh(x, y, z.astype(float), cmap = 'turbo')
 
+        if columns_to_use[col] == 'uid':
+            deccy = 0
+            sizzy = 6
+        else:
+            deccy = 3
+            sizzy = 8
+        
         for num, row in deeta.iterrows():
             if row['linewidth'] >= RES_LIMIT:
                 aqses.text(
                     row[column_for_x],
                     row[column_for_y],
-                    np.round(row[columns_to_use[col]], decimals=3),
+                    np.round(row[columns_to_use[col]], decimals=deccy),
                     ha='center',
                     va='center',
-                    size=8,
+                    size=sizzy,
                     color='black',
                     backgroundcolor='white',
                 )

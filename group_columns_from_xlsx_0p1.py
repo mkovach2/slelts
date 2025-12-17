@@ -48,9 +48,9 @@ if __name__ == "__main__":
         # excel_path = "C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/"+\
         #     "General - Products/+NewFileSystem/Device Components/Grating Coupler/"+\
         #     "20250321_fab_var_study/20250507_stage_5/compact_data_5a_11015201.xlsx"
-        excel_path = '/home/miles/Documents/T_local/device_components/'+\
-            'grating_coupler/20251126_gc_1033/rd3/processed/'+\
-            'compact_data_13056997.xlsx'
+        excel_path = '/mnt/T/Device Components/Grating Coupler/'+\
+            '20251126_gc_1033/rd4/processed/'+\
+            'compact_data_13186843.xlsx'
 
     save_dir = os.path.dirname(excel_path)
     

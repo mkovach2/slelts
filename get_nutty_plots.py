@@ -19,11 +19,11 @@ if True:
     # lonj = "C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/"+\
     #     "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
     
-    lonj = '/home/miles/Documents/T_local/device_components/grating_coupler/'+\
-           '20251126_gc_1033/rd3/processed/grouped/'
+    lonj = '/mnt/T/Device Components/Grating Coupler/'+\
+           '20251126_gc_1033/rd4/processed/grouped/'
     
     csv_in_path = lonj +\
-        "transmission_dB.csv"
+        "backreflection_dB.csv"
         # "20250519_apo_+8_g2f11_c_band/vert_stage_2_advanced_trap_remix/stage_2_atr_6249_thru_6601.csv"
         # "20250602_apo_+8_g2f11_o_band/horiz_st2_o_band_power_moves/grouped/no_sweep = 1.csv"
         # "20250602_apo_+8_g2f11_o_band/ov_procedure_test/grouped/no_sweep = 1.csv"
