@@ -52,6 +52,18 @@ if __name__ == "__main__":
                     repo_list.append(item)
         
         for repo in repo_list:
+            # fetcharoo = subprocess.run(
+            subprocess.run(
+                (
+                    "git",
+                    "-C",
+                    repo,
+                    "fetch",
+                ),
+                capture_output=True,
+                text=True,
+            )#.stdout
+            
             utd_status = False # reflects whether git says a repo is up to date
             outputski = subprocess.run(
                 (
