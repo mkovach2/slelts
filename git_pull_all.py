@@ -51,7 +51,9 @@ if __name__ == "__main__":
                 if pathlib.Path(item / ".git") in item.iterdir():
                     repo_list.append(item)
         
-        for repo in repo_list:
+        for repo_n in range(len(repo_list)):
+            repo = repo_list[repo_n]
+            print(f"fetching {repo} ({repo_n + 1} of {len(repo_list)})...")
             # fetcharoo = subprocess.run(
             subprocess.run(
                 (
