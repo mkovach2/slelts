@@ -31,10 +31,13 @@ if __name__ == "__main__":
     details_list = []
     
     gitdir = pathlib.Path(input(f"what dir to use?\ndefault: {git_folder_default}\n_ "))
+    
     if gitdir == pathlib.Path(""):
         gitdir = git_folder_default
     elif not(gitdir.is_dir()):
-        if pathlib.Path(home / "__git_repos" / gitdir).is_dir():
+        if gitdir.expanduser().is_dir():
+            gitdir = gitdir.expanduser()
+        elif pathlib.Path(home / "__git_repos" / gitdir).is_dir():
             gitdir = pathlib.Path(home / "__git_repos" / gitdir)
         elif pathlib.Path(home / "__git_repos/hl_cad" / gitdir).is_dir():
             gitdir = pathlib.Path(home / "__git_repos/hl_cad" / gitdir)
@@ -96,15 +99,18 @@ if __name__ == "__main__":
     if len(not_utd_list) > 0:
         utd_str = f'\nin the folder\n{gitdir}\n\nthese repos are NOT listed as '+\
             f'\"up to date\" by git:\n'
-        print(utd_str)
+        print('\n' + '~' * 40 + utd_str)
+        for repo in not_utd_list:
+            print(f'*\t{repo[0]}')
+        print('\n' + '~' * 40 + "\ndetails:\n")
         for repo in not_utd_list:
             repo_info =\
-                f"{repo[0]} ~~~~~\n"+\
+                f"~~~~~~~~~~ {repo[0]} ~~~~~~~~~~\n"+\
                 f"branch: {repo[1]}\n"+\
                 f"message:\n{repo[2]}\n"
             print(repo_info)
         
-        yslashn = input("pull all? (y/N)\n_ ")
+        yslashn = input('~' * 40 + "\npull all? (y/N)\n_ ")
         if yslashn.lower() == 'y':
             for repo in not_utd_list:
                 subprocess.run(
