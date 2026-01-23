@@ -113,6 +113,7 @@ if __name__ == "__main__":
         yslashn = input('~' * 40 + "\npull all? (y/N)\n_ ")
         if yslashn.lower() == 'y':
             for repo in not_utd_list:
+                print(f"~~~~~~~~~~ {repo[0]} ~~~~~~~~~~\n")
                 subprocess.run(
                     (
                         "git",
@@ -123,6 +124,7 @@ if __name__ == "__main__":
                     # capture_output=True,
                     text=True,
                 )
+            print('~' * 40 + '\n')
         else:
             print("not pulling.")
         
