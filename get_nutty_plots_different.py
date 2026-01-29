@@ -60,13 +60,13 @@ else:
 important_wavelength = 1550
 
 columns_to_use = [
-    # 'apparent_center',
-    # 'avg',
-    # 'max',
+    'apparent_center',
+    'avg',
+    'max',
     f'value_at_{important_wavelength}',
-    # 'uid',
-    # 'linewidth',
-    # 'fiber_x_um',
+    'uid',
+    'linewidth',
+    'fiber_x_um',
 ]
 # columns_to_use = []
 columns_to_exclude = []
@@ -220,7 +220,7 @@ if __name__ == "__main__":
             if row['linewidth'] >= RES_LIMIT or all_lw_allowed:
                 z.at[row[column_for_y], row[column_for_x]] = row[columns_to_use[col]]
         
-        print(z)
+        # print(z)
         deeta_p = aqses.pcolormesh(x, y, z.astype(float), cmap = 'turbo')
 
         if columns_to_use[col] == 'uid':
