@@ -47,35 +47,32 @@ if False:
 
 else:
     round_str = 'rd1'
-    
+
     lonj = '/mnt/T/Device Components/Grating Coupler/' + \
-           '20260116_gc_450_635/450_horiz/'+\
-           '450_horiz_rd1_1550_compze/processed/'
-           # '450_horiz_rd1ze/processed/'
-           # '450_horiz_rd1_testze/processed/'
-        # f'20251126_gc_1033/{round_str}/processed/'
+           '20260116_gc_450_635/450_horiz/' + \
+           '450_horiz_rd1_1550_comp_50sep_g2f11ze/processed/'
 
-    group_uid = '13675257'
+    csv_in_path = lonj + \
+                  "jmp_data_13677739_loss_combined.csv"
     
-    if round_str == 'rd1':
-        # csv_in_path = lonj + "jmp_data_{group_uid}_loss.csv"
-        csv_in_path = lonj + f"jmp_data_{group_uid}_loss.csv"
-    elif round_str == 'rd2':
-        csv_in_path = lonj + f"jmp_data_{group_uid}_xmit_more.csv"
-    elif round_str == 'rd3':
-        csv_in_path = lonj + f"jmp_data_{group_uid}_loss.csv"
-    elif round_str == 'rd4':
-        csv_in_path = lonj + f"jmp_data_{group_uid}_br.csv"
-    
-    csv_str = f'20260116_gc_450_635 450_horiz {round_str}'
+    csv_str = "1550 comparison, 50 um sep"
 
+important_wavelength = 1550
 
-columns_to_use = ['apparent_center', 'avg', 'max', 'value_at_450', 'uid', 'linewidth']
+columns_to_use = [
+    # 'apparent_center',
+    # 'avg',
+    # 'max',
+    f'value_at_{important_wavelength}',
+    # 'uid',
+    # 'linewidth',
+    # 'fiber_x_um',
+]
 # columns_to_use = []
 columns_to_exclude = []
 # if columns_to_use is an empty list, all columns will be selected except those
 # in columns_to_exclude.
-apparent_center_diff_wl = 450
+apparent_center_diff_wl = important_wavelength
 
 
 
@@ -133,6 +130,9 @@ if __name__ == "__main__":
     # column_for_x = 'mesh'
     # column_for_y = 'sep'
     
+    if 'gc_dict.period' in deeta.columns and 'pd' in (column_for_x, column_for_y):
+        deeta['pd'] = deeta['gc_dict.period'] * 1e6
+    
     if column_for_x in ('pd', 'ff') and column_for_y in ('pd', 'ff'):
         if abs(deeta['pd'].mean()) < 1e-5:
             deeta['pd'] = deeta['pd'] * 1e6
@@ -142,7 +142,13 @@ if __name__ == "__main__":
     else:
         deeta['linewidth'] = 1
     
-    if 'apparent_center' in columns_to_use or 'apparent_center' not in columns_to_exclude:
+    apparent_center_logic = \
+        'apparent_center' in columns_to_use or \
+        (
+            len(columns_to_use) < 1 and\
+            'apparent_center' not in columns_to_exclude
+        )
+    if  apparent_center_logic:
         deeta['neg_abs_appc_diff'] = -abs(deeta['apparent_center'] - apparent_center_diff_wl)
         columns_to_use.remove('apparent_center')
         columns_to_use.append('neg_abs_appc_diff')
@@ -189,23 +195,32 @@ if __name__ == "__main__":
     axs = np.atleast_2d(axs)
     if any(np.shape(axs) != tru_ratio): 
         axs = axs.T
+
+    unique_x = sorted(pd.unique(deeta[column_for_x]))
+    unique_y = sorted(pd.unique(deeta[column_for_y]))
+    print(f'{unique_x=}')
+    print(f'{unique_y=}')
+    x, y = np.meshgrid(
+        unique_x,
+        unique_y,
+    )
     
     for col in range(len(columns_to_use)):
+
+        print([col // tru_ratio[1], col % tru_ratio[1]])
+        
         aqses = axs[col // tru_ratio[1], col % tru_ratio[1]]
-        x,y = np.meshgrid(
-            pd.unique(deeta[column_for_x]),
-            pd.unique(deeta[column_for_y])
-        )
         
         z = pd.DataFrame(
-            columns = pd.unique(deeta[column_for_x]),
-            index = pd.unique(deeta[column_for_y]),
+            columns = unique_x,
+            index = unique_y,
         )
         
         for num, row in deeta.iterrows():
             if row['linewidth'] >= RES_LIMIT or all_lw_allowed:
                 z.at[row[column_for_y], row[column_for_x]] = row[columns_to_use[col]]
         
+        print(z)
         deeta_p = aqses.pcolormesh(x, y, z.astype(float), cmap = 'turbo')
 
         if columns_to_use[col] == 'uid':
