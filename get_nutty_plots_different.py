@@ -46,29 +46,36 @@ if False:
         # "20250602_apodized_+8_g2f11_o_band/horiz_st2_o_band/grouped/6692_thru_7240.csv"
 
 else:
-    round_str = 'rd4'
+    round_str = 'rd1'
     
     lonj = '/mnt/T/Device Components/Grating Coupler/' + \
-           f'20251126_gc_1033/{round_str}/processed/'
+           '20260116_gc_450_635/450_horiz/'+\
+           '450_horiz_rd1_1550_compze/processed/'
+           # '450_horiz_rd1ze/processed/'
+           # '450_horiz_rd1_testze/processed/'
+        # f'20251126_gc_1033/{round_str}/processed/'
+
+    group_uid = '13675257'
     
     if round_str == 'rd1':
-        csv_in_path = lonj + "jmp_data_13036610_loss_more.csv"
+        # csv_in_path = lonj + "jmp_data_{group_uid}_loss.csv"
+        csv_in_path = lonj + f"jmp_data_{group_uid}_loss.csv"
     elif round_str == 'rd2':
-        csv_in_path = lonj + "jmp_data_13037635_xmit_more.csv"
+        csv_in_path = lonj + f"jmp_data_{group_uid}_xmit_more.csv"
     elif round_str == 'rd3':
-        csv_in_path = lonj + "jmp_data_13056997_loss.csv"
+        csv_in_path = lonj + f"jmp_data_{group_uid}_loss.csv"
     elif round_str == 'rd4':
-        csv_in_path = lonj + "jmp_data_13186843_br.csv"
+        csv_in_path = lonj + f"jmp_data_{group_uid}_br.csv"
     
-    csv_str = f'20251126_gc_1033 {round_str}'
+    csv_str = f'20260116_gc_450_635 450_horiz {round_str}'
 
 
-columns_to_use = ['apparent_center', 'avg', 'max', 'value_at_1033', 'uid', 'linewidth']
+columns_to_use = ['apparent_center', 'avg', 'max', 'value_at_450', 'uid', 'linewidth']
 # columns_to_use = []
 columns_to_exclude = []
 # if columns_to_use is an empty list, all columns will be selected except those
 # in columns_to_exclude.
-apparent_center_diff_wl = 1033
+apparent_center_diff_wl = 450
 
 
 
@@ -111,7 +118,7 @@ contour_label_presets = {
 }
 
 RES_LIMIT = 0.15
-
+all_lw_allowed = True
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~main~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 if __name__ == "__main__":
@@ -123,12 +130,17 @@ if __name__ == "__main__":
     
     column_for_x = 'pd'
     column_for_y = 'ff'
+    # column_for_x = 'mesh'
+    # column_for_y = 'sep'
     
-    if abs(deeta['pd'].mean()) < 1e-5:
-        deeta['pd'] = deeta['pd'] * 1e6
-    
-    if 'linewidth' not in deeta.columns:
-        deeta['linewidth'] = deeta['pd'] * deeta['ff']
+    if column_for_x in ('pd', 'ff') and column_for_y in ('pd', 'ff'):
+        if abs(deeta['pd'].mean()) < 1e-5:
+            deeta['pd'] = deeta['pd'] * 1e6
+        
+        if 'linewidth' not in deeta.columns:
+            deeta['linewidth'] = deeta['pd'] * deeta['ff']
+    else:
+        deeta['linewidth'] = 1
     
     if 'apparent_center' in columns_to_use or 'apparent_center' not in columns_to_exclude:
         deeta['neg_abs_appc_diff'] = -abs(deeta['apparent_center'] - apparent_center_diff_wl)
@@ -191,7 +203,7 @@ if __name__ == "__main__":
         )
         
         for num, row in deeta.iterrows():
-            if row['linewidth'] >= RES_LIMIT:
+            if row['linewidth'] >= RES_LIMIT or all_lw_allowed:
                 z.at[row[column_for_y], row[column_for_x]] = row[columns_to_use[col]]
         
         deeta_p = aqses.pcolormesh(x, y, z.astype(float), cmap = 'turbo')
@@ -204,7 +216,7 @@ if __name__ == "__main__":
             sizzy = 8
         
         for num, row in deeta.iterrows():
-            if row['linewidth'] >= RES_LIMIT:
+            if row['linewidth'] >= RES_LIMIT or all_lw_allowed:
                 aqses.text(
                     row[column_for_x],
                     row[column_for_y],

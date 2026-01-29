@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-if True:
+if False:
     # lonj = "C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/"+\
     #     "General - Products/+NewFileSystem/Device Components/Grating Coupler/"
     
@@ -36,10 +36,21 @@ if True:
         # "20250519_apodized_+8_g2f11_c_band/horiz_stage_2/86450_thru_87401.csv"
         # "20250602_apodized_+8_g2f11_o_band/horiz_st2_o_band/grouped/6692_thru_7240.csv"
 
-else:
+# else:
     # csv_in_path = "T:/Device Components/Grating Coupler/"+\
     #     "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
     csv_in_path = '/home/miles/Desktop/MX0095A_FC3R5/g2f11/cv_stats/cv_'
+else:
+    lonj = '/mnt/T/Device Components/Grating Coupler/' + \
+           '20260116_gc_450_635/450_horiz/'+\
+           '450_horiz_rd1_1550_compze/processed/grouped/'
+           # '450_horiz_rd1ze/processed/grouped/'
+           # '450_horiz_rd1_testze/processed/grouped/'
+    
+    csv_in_path = lonj + \
+                  "transmission_dB.csv"
+    
+    csv_str = '20260116_gc_450_635; 450 horiz; rd1'
 
 
 graphs_ratio = np.array((2, 1)) # num rows, num columns.
@@ -55,14 +66,14 @@ top_margin_percent = 0.95 # a good top for graphs_ratio = (2,1)
 plt.style.use("bmh")
 # plt.style.use("seaborn-v0_8")
 
-combo_to_use = None # None to not use a preset combo
-# combo_to_use = "o_band" # None to not use a preset combo
+# combo_to_use = None # None to not use a preset combo
+combo_to_use = "c_band" # None to not use a preset combo
 
 presets = {
-    "verts_at" : (1033,), # put empty for no vert lines
+    "verts_at" : (450,), # put empty for no vert lines
     "verts_colors" : ('red',), # put empty for no vert lines
     "verts_widths" : (1.75,), # put empty for no vert lines
-    "shade_between" : (1023, 1043), # put empty for no fillski tweenor
+    "shade_between" : (), # put empty for no fillski tweenor
     "shade_color" : 'blue',
     "shade_alpha" : 0.1,
     # "shade_alpha" : 0.075,
@@ -215,8 +226,8 @@ if __name__ == "__main__":
         uid_row = uid_row.strip().split(',')
     
     # allmax = int(np.max(deeta[:,1:])) + 1
-    allmin = -55
-    # allmin = int(np.min(deeta[:,1:])) - 1
+    # allmin = -55
+    allmin = int(np.min(deeta[:,1:])) - 1
     
     num_graphs = np.shape(deeta)[1] - 1
     if graphs_ratio [0] is None:

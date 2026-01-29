@@ -27,13 +27,14 @@ py_auto(){
         ]]; do
             counter=$((counter + 1))
             
-            ## printf "counter = $counter\n"
-            ## printf "venv_found = $venv_found\n"
-            ## printf "parent_dir = $parent_dir\n"
+            # printf "counter = $counter\n"
+            # printf "venv_found = $venv_found\n"
+            # printf "parent_dir = $parent_dir\n"
             
             if [ -d "$parent_dir/.venv" ]; then
                 venv_found=1
             else
+                printf "$parent_dir: no .venv found.\n"
                 parent_dir="$(dirname "$parent_dir")"
             fi
         done
@@ -63,8 +64,3 @@ py_auto(){
         cd $initial_pwd
     fi
 }
-
-# py_auto /home/miles/__git_repos/slelts/get_nutty_plots_different.py
-py_auto /home/miles/__git_repos/hl_cad/XX0115/xx0115/reticle.py
-# py_auto /home/miles/__git_repos/slelts/git_pull_all.py
-# py_auto ~/__git_repos/slelts/git_pull_all.py

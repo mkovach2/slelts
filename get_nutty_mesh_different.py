@@ -143,14 +143,13 @@ if False:
         # "20250602_apodized_+8_g2f11_o_band/horiz_st2_o_band/grouped/6692_thru_7240.csv"
 
 else:
-    lonj = '/home/miles/Documents/T_local/device_components/grating_coupler/' + \
-           '20251126_gc_1033/rd2/processed/'
+    lonj = '/mnt/T/Device Components/Grating Coupler/' + \
+           '20260116_gc_450_635/450_horiz/450_horiz_rd1ze/processed/grouped/'
 
     csv_in_path = lonj + \
-                  "jmp_data_13037635_xmit_more.csv"
-                  # "transmission_dB.csv"
-    
-    csv_str = '20251126_gc_1033 rd2'
+                  "transmission_dB.csv"
+
+    csv_str = '20260116_gc_450_635 450 horiz rd1'
 
 
 graphs_ratio = np.array((2.0,1.0)) # num rows, num columns
