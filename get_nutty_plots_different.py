@@ -50,12 +50,13 @@ else:
 
     lonj = '/mnt/T/Device Components/Grating Coupler/' + \
            '20260116_gc_450_635/450_horiz/' + \
-           '450_horiz_rd1_1550_comp_50sep_g2f11ze/processed/'
+           '450_horiz_rd1_1550_comp_30sep_g2f11ze/processed/'
 
     csv_in_path = lonj + \
-                  "jmp_data_13677739_loss_combined.csv"
+                  "jmp_data_13677766_loss_combined.csv"
+                  # "jmp_data_13677739_loss_combined.csv"
     
-    csv_str = "1550 comparison, 50 um sep"
+    csv_str = "1550 comparison, 30 um sep"
 
 important_wavelength = 1550
 

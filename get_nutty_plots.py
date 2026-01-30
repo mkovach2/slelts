@@ -43,14 +43,14 @@ if False:
 else:
     lonj = '/mnt/T/Device Components/Grating Coupler/' + \
            '20260116_gc_450_635/450_horiz/'+\
-           '450_horiz_rd1_1550_comp_50sep_g2f11ze/processed/grouped/'
+           '450_horiz_rd1_1550_comp_30sep_g2f11ze/processed/grouped/'
            # '450_horiz_rd1ze/processed/grouped/'
            # '450_horiz_rd1_testze/processed/grouped/'
     
     csv_in_path = lonj + \
                   "transmission_dB.csv"
     
-    csv_str = '450_horiz_rd1_1550_comp_50sep_g2f11ze; 450 horiz; rd1'
+    csv_str = '450_horiz_rd1_1550_comp_30sep_g2f11ze; 450 horiz; rd1'
 
 
 graphs_ratio = np.array((2, 1)) # num rows, num columns.
