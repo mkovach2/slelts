@@ -2,18 +2,26 @@
 # <project>
 # Author: miles at hyperlightcorp dot com
 # Created: <date>
+import os.path
 
 # <description>
 
 # -------10--------20--------30--------40--------50--------60--------70--------
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-# import pandas as pd
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~user~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+UNIT = { # dont change
+    'm': 1e-3,
+    'u': 1e-6,
+    'n': 1e-9,
+    'p': 1e-12,
+}
 
 if False:
     # lonj = "C:/Users/miles.HYPERLIGHT/OneDrive - HyperLight Corporation/"+\
@@ -43,14 +51,23 @@ if False:
 else:
     lonj = '/mnt/T/Device Components/Grating Coupler/' + \
            '20260116_gc_450_635/450_horiz/'+\
-           '450_horiz_rd1_1550_comp_30sep_g2f11ze/processed/grouped/'
+           '450_horiz_rd1_-8deg_05sepze_07-/processed/'
            # '450_horiz_rd1ze/processed/grouped/'
            # '450_horiz_rd1_testze/processed/grouped/'
     
     csv_in_path = lonj + \
-                  "transmission_dB.csv"
+                  "grouped/transmission_dB.csv"
     
-    csv_str = '450_horiz_rd1_1550_comp_30sep_g2f11ze; 450 horiz; rd1'
+    info_path = lonj + \
+        "jmp_data_13684803_loss_combined.csv" # set to None to not deal with this
+    
+    info_columns_to_use = {
+        # <column name>: <desired unit>,
+        'gc_dict.period': 'u',
+        'gc_dict.ff': 1,
+    }
+    
+    csv_str = '450_horiz_rd1_-8deg_05sepze_07-; 450 horiz; backwards; 05 um separation'
 
 
 graphs_ratio = np.array((2, 1)) # num rows, num columns.
@@ -66,8 +83,8 @@ top_margin_percent = 0.95 # a good top for graphs_ratio = (2,1)
 plt.style.use("bmh")
 # plt.style.use("seaborn-v0_8")
 
-# combo_to_use = None # None to not use a preset combo
-combo_to_use = "c_band" # None to not use a preset combo
+combo_to_use = None # None to not use a preset combo
+# combo_to_use = "c_band" # None to not use a preset combo
 
 presets = {
     "verts_at" : (450,), # put empty for no vert lines
@@ -225,6 +242,28 @@ if __name__ == "__main__":
             uid_row = ci.readline()
         uid_row = uid_row.strip().split(',')
     
+    use_infopath = info_path is not None
+    
+    if use_infopath:
+        col_keys_list = list(info_columns_to_use.keys())
+        if os.path.isfile(info_path):
+            info_deeta = pd.read_csv(
+                info_path,
+                usecols=['uid',] + col_keys_list
+            )
+            info_deeta = info_deeta.set_index('uid')
+
+            for info_col in col_keys_list:
+                if info_columns_to_use[info_col] in UNIT.keys():
+                    info_deeta[info_col + f'_{info_columns_to_use[info_col]}'] = \
+                        info_deeta.pop(info_col)/UNIT[info_columns_to_use[info_col]]
+            
+        else:
+            use_infopath = False
+            oop_string = f'oop, the info_path:\n{info_path}\nisnt passing mustard.\n'+\
+                'continuing without it.'
+            print(oop_string)
+    
     # allmax = int(np.max(deeta[:,1:])) + 1
     # allmin = -55
     allmin = int(np.min(deeta[:,1:])) - 1
@@ -287,8 +326,13 @@ if __name__ == "__main__":
         
         max_arg = np.argmax(deeta[:,col + 1])
         maxcoords = (deeta[max_arg, 0], np.max(deeta[:,col + 1]))
-        title_str = f"{uid_row[col + 1]}\n"+\
-            f"max = {maxcoords}\n"
+        graph_uid = int(uid_row[col + 1])
+        title_str = f"{graph_uid}\n"
+        if use_infopath:
+            for info_col in info_deeta.columns:
+                title_str += f"{info_col} = {info_deeta.at[graph_uid, info_col]}; "
+            title_str += "\n"
+        title_str += f"max = {maxcoords}\n"
         
         if len(presets["horiz_percentiles"]) > 0:
             title_str += f"{tuple(np.flip(np.sort(np.around(hp_vals, 2))))}"
