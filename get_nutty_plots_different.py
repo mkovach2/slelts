@@ -46,19 +46,40 @@ if False:
         # "20250602_apodized_+8_g2f11_o_band/horiz_st2_o_band/grouped/6692_thru_7240.csv"
 
 else:
-    round_str = 'rd1'
+    transmission_plots = False
 
+    if transmission_plots:
+        transmission_str = 'transmission'
+        transmission_str_short = 'loss'
+    else:
+        transmission_str = 'backreflection'
+        transmission_str_short = 'br'
+    
+    # lonj = '/mnt/T/Device Components/Grating Coupler/' + \
+    #        '20260116_gc_450_635/450_horiz/' + \
+    #        '450_horiz_rd1_1550_comp_30sep_g2f11ze/processed/'
+    # 
+    # csv_in_path = lonj + \
+    #               "jmp_data_13677766_loss_combined.csv"
+    #               # "jmp_data_13677739_loss_combined.csv"
+    # 
+    # csv_str = "1550 comparison, 30 um sep"
+    # 
+    # 
     lonj = '/mnt/T/Device Components/Grating Coupler/' + \
            '20260116_gc_450_635/450_horiz/' + \
-           '450_horiz_rd1_1550_comp_30sep_g2f11ze/processed/'
+           '450_horiz_rd1_+8deg_05sepze/processed/'
+    # '450_horiz_rd1ze/processed/grouped/'
+    # '450_horiz_rd1_testze/processed/grouped/'
 
     csv_in_path = lonj + \
-                  "jmp_data_13677766_loss_combined.csv"
-                  # "jmp_data_13677739_loss_combined.csv"
+                  f"jmp_data_13716740_{transmission_str_short}_combined.csv"
     
-    csv_str = "1550 comparison, 30 um sep"
-
-important_wavelength = 1550
+    csv_str = '450_horiz_rd1_-8deg_05sepze; 450 horiz; forwards; '+\
+              f'05 um separation\n{transmission_str}'
+    
+    
+important_wavelength = 450
 
 columns_to_use = [
     'apparent_center',
@@ -199,8 +220,8 @@ if __name__ == "__main__":
 
     unique_x = sorted(pd.unique(deeta[column_for_x]))
     unique_y = sorted(pd.unique(deeta[column_for_y]))
-    print(f'{unique_x=}')
-    print(f'{unique_y=}')
+    # print(f'{unique_x=}')
+    # print(f'{unique_y=}')
     x, y = np.meshgrid(
         unique_x,
         unique_y,
@@ -208,7 +229,7 @@ if __name__ == "__main__":
     
     for col in range(len(columns_to_use)):
 
-        print([col // tru_ratio[1], col % tru_ratio[1]])
+        # print([col // tru_ratio[1], col % tru_ratio[1]])
         
         aqses = axs[col // tru_ratio[1], col % tru_ratio[1]]
         

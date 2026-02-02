@@ -49,17 +49,30 @@ if False:
     #     "20250519_apodized_+8_g2f11/stage_2_xe/for_graphing/grouped/no_sweep = 1.csv"
     csv_in_path = '/home/miles/Desktop/MX0095A_FC3R5/g2f11/cv_stats/cv_'
 else:
-    lonj = '/mnt/T/Device Components/Grating Coupler/' + \
-           '20260116_gc_450_635/450_horiz/'+\
-           '450_horiz_rd1_-8deg_05sepze_07-/processed/'
-           # '450_horiz_rd1ze/processed/grouped/'
-           # '450_horiz_rd1_testze/processed/grouped/'
+    transmission_plots = False
     
+    if transmission_plots:
+        transmission_str = 'transmission'
+        transmission_str_short = 'loss'
+    else:
+        transmission_str = 'backreflection'
+        transmission_str_short = 'br'
+    
+    lonj = '/mnt/T/Device Components/Grating Coupler/' + \
+           '20260116_gc_450_635/450_horiz/' + \
+           '450_horiz_rd1_+8deg_05sepze/processed/'
+    # '450_horiz_rd1ze/processed/grouped/'
+    # '450_horiz_rd1_testze/processed/grouped/'
+
     csv_in_path = lonj + \
-                  "grouped/transmission_dB.csv"
+                f"grouped/{transmission_str}_dB.csv"
+                # "grouped/backreflection_dB.csv"
+
+    csv_str = "450_horiz_rd1_-8deg_05sepze; 450 horiz; forwards; "+\
+    f"05 um separation\n{transmission_str}"
     
     info_path = lonj + \
-        "jmp_data_13684803_loss_combined.csv" # set to None to not deal with this
+        f"jmp_data_13716740_{transmission_str_short}_combined.csv" # set to None to not deal with this
     
     info_columns_to_use = {
         # <column name>: <desired unit>,
@@ -67,7 +80,6 @@ else:
         'gc_dict.ff': 1,
     }
     
-    csv_str = '450_horiz_rd1_-8deg_05sepze_07-; 450 horiz; backwards; 05 um separation'
 
 
 graphs_ratio = np.array((2, 1)) # num rows, num columns.
