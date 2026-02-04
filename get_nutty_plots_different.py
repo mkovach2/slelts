@@ -11,6 +11,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from functools import partial
 
 from math_utils_20251211 import (
     ratio_to_shape,
@@ -46,7 +47,7 @@ if False:
         # "20250602_apodized_+8_g2f11_o_band/horiz_st2_o_band/grouped/6692_thru_7240.csv"
 
 else:
-    transmission_plots = False
+    transmission_plots = True
 
     if transmission_plots:
         transmission_str = 'transmission'
@@ -54,6 +55,9 @@ else:
     else:
         transmission_str = 'backreflection'
         transmission_str_short = 'br'
+    
+    # set_uid = 13690991
+    set_uid = 13734466
     
     # lonj = '/mnt/T/Device Components/Grating Coupler/' + \
     #        '20260116_gc_450_635/450_horiz/' + \
@@ -68,14 +72,16 @@ else:
     # 
     lonj = '/mnt/T/Device Components/Grating Coupler/' + \
            '20260116_gc_450_635/450_horiz/' + \
-           '450_horiz_rd1_+8deg_05sepze/processed/'
+           '450_horiz_rd1_-8deg_05sep_long_xze/processed/'
+           # '450_horiz_rd1_-8deg_05sepze/processed/'
     # '450_horiz_rd1ze/processed/grouped/'
     # '450_horiz_rd1_testze/processed/grouped/'
 
     csv_in_path = lonj + \
-                  f"jmp_data_13716740_{transmission_str_short}_combined.csv"
+                  f"jmp_data_{set_uid}_{transmission_str_short}_combined.csv"
     
-    csv_str = '450_horiz_rd1_-8deg_05sepze; 450 horiz; forwards; '+\
+    # csv_str = f'450_horiz_rd1_-8deg_05sepze; set UID: {set_uid}; 450 horiz; backwards; '+ \
+    csv_str = f'450_horiz_rd1_-8deg_05sep_long_xze; set UID: {set_uid}; 450 horiz; backwards; ' + \
               f'05 um separation\n{transmission_str}'
     
     
@@ -96,7 +102,9 @@ columns_to_exclude = []
 # in columns_to_exclude.
 apparent_center_diff_wl = important_wavelength
 
-
+vmin_vmax = {
+    'fiber_x_um': (-10, 40),
+}
 
 graphs_ratio = np.array((3, 2)) # num rows, num columns.
     # enter "None" for either rows or columns to force the other dimension.
@@ -227,11 +235,11 @@ if __name__ == "__main__":
         unique_y,
     )
     
-    for col in range(len(columns_to_use)):
-
+    for col_n in range(len(columns_to_use)):
+        col_name = columns_to_use[col_n]
         # print([col // tru_ratio[1], col % tru_ratio[1]])
         
-        aqses = axs[col // tru_ratio[1], col % tru_ratio[1]]
+        aqses = axs[col_n // tru_ratio[1], col_n % tru_ratio[1]]
         
         z = pd.DataFrame(
             columns = unique_x,
@@ -240,12 +248,28 @@ if __name__ == "__main__":
         
         for num, row in deeta.iterrows():
             if row['linewidth'] >= RES_LIMIT or all_lw_allowed:
-                z.at[row[column_for_y], row[column_for_x]] = row[columns_to_use[col]]
+                z.at[row[column_for_y], row[column_for_x]] = row[col_name]
         
         # print(z)
-        deeta_p = aqses.pcolormesh(x, y, z.astype(float), cmap = 'turbo')
+        pcolor_partial = partial(
+            aqses.pcolormesh,
+            x,
+            y,
+            z.astype(float),
+            cmap='turbo',
+        )
 
-        if columns_to_use[col] == 'uid':
+        title_str = col_name
+        if col_name in vmin_vmax.keys():
+            deeta_p = pcolor_partial(
+                vmin = vmin_vmax[col_name][0],
+                vmax = vmin_vmax[col_name][1],
+            )
+            title_str += f', color bounds: {vmin_vmax[col_name]}'
+        else:
+            deeta_p = pcolor_partial()
+
+        if col_name == 'uid':
             deccy = 0
             sizzy = 6
         else:
@@ -257,7 +281,7 @@ if __name__ == "__main__":
                 aqses.text(
                     row[column_for_x],
                     row[column_for_y],
-                    np.round(row[columns_to_use[col]], decimals=deccy),
+                    np.round(row[col_name], decimals=deccy),
                     ha='center',
                     va='center',
                     size=sizzy,
@@ -273,7 +297,7 @@ if __name__ == "__main__":
             yticks = pd.unique(deeta[column_for_y]),
             xlabel = column_for_x,
             ylabel = column_for_y,
-            title = columns_to_use[col],
+            title = title_str,
         )
     
     fig.suptitle(csv_str)

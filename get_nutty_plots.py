@@ -58,9 +58,11 @@ else:
         transmission_str = 'backreflection'
         transmission_str_short = 'br'
     
+    set_uid = 13734466
+    
     lonj = '/mnt/T/Device Components/Grating Coupler/' + \
            '20260116_gc_450_635/450_horiz/' + \
-           '450_horiz_rd1_+8deg_05sepze/processed/'
+           '450_horiz_rd1_-8deg_05sep_long_xze/processed/'
     # '450_horiz_rd1ze/processed/grouped/'
     # '450_horiz_rd1_testze/processed/grouped/'
 
@@ -68,11 +70,11 @@ else:
                 f"grouped/{transmission_str}_dB.csv"
                 # "grouped/backreflection_dB.csv"
 
-    csv_str = "450_horiz_rd1_-8deg_05sepze; 450 horiz; forwards; "+\
+    csv_str = "450_horiz_rd1_-8deg_05sep_long_xze; 450 horiz; backwards; "+\
     f"05 um separation\n{transmission_str}"
     
     info_path = lonj + \
-        f"jmp_data_13716740_{transmission_str_short}_combined.csv" # set to None to not deal with this
+        f"jmp_data_{set_uid}_{transmission_str_short}_combined.csv" # set to None to not deal with this
     
     info_columns_to_use = {
         # <column name>: <desired unit>,
