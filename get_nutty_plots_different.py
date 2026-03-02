@@ -57,7 +57,7 @@ else:
         transmission_str_short = 'br'
     
     # set_uid = 13690991
-    set_uid = 13734466
+    set_uid = 13757041
     
     # lonj = '/mnt/T/Device Components/Grating Coupler/' + \
     #        '20260116_gc_450_635/450_horiz/' + \
@@ -72,7 +72,7 @@ else:
     # 
     lonj = '/mnt/T/Device Components/Grating Coupler/' + \
            '20260116_gc_450_635/450_horiz/' + \
-           '450_horiz_rd1_-8deg_05sep_long_xze/processed/'
+           '450_horiz_rd1_-8deg_18sep_long_xze/processed/'
            # '450_horiz_rd1_-8deg_05sepze/processed/'
     # '450_horiz_rd1ze/processed/grouped/'
     # '450_horiz_rd1_testze/processed/grouped/'
@@ -81,8 +81,8 @@ else:
                   f"jmp_data_{set_uid}_{transmission_str_short}_combined.csv"
     
     # csv_str = f'450_horiz_rd1_-8deg_05sepze; set UID: {set_uid}; 450 horiz; backwards; '+ \
-    csv_str = f'450_horiz_rd1_-8deg_05sep_long_xze; set UID: {set_uid}; 450 horiz; backwards; ' + \
-              f'05 um separation\n{transmission_str}'
+    csv_str = f'450_horiz_rd1_-8deg_18sep_long_xze; set UID: {set_uid}; 450 horiz; backwards; ' + \
+              f'18 um separation\n{transmission_str}'
     
     
 important_wavelength = 450

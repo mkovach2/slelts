@@ -56,7 +56,22 @@ if __name__ == "__main__":
         
         for repo_n in range(len(repo_list)):
             repo = repo_list[repo_n]
-            print(f"fetching {repo} ({repo_n + 1} of {len(repo_list)})...")
+            
+            repo_branch = subprocess.run(
+                (
+                    "git",
+                    "-C",
+                    repo,
+                    "branch",
+                ),
+                capture_output=True,
+                text=True,
+            ).stdout
+            
+            repo_branch = repo_branch.rpartition('* ')[-1]
+            repo_branch = repo_branch.split('\n', 1)[0]
+            
+            print(f"fetching {repo}: {repo_branch} ({repo_n + 1} of {len(repo_list)})...")
             # fetcharoo = subprocess.run(
             subprocess.run(
                 (
