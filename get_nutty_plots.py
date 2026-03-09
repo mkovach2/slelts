@@ -4,7 +4,8 @@
 # Created: <date>
 import os.path
 
-# <description>
+# note miles: you may be looking for slelts/get_nutty_plots_for_gc_analysis.py
+# ensure this is not the case before editing this one too heavily.
 
 # -------10--------20--------30--------40--------50--------60--------70--------
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~imports~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
