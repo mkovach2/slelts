@@ -36,5 +36,7 @@ if __name__ == "__main__":
 
     print(f'{files_destroyt = }')
 
+    input('press enter to close.')
+
 
 # end if __name__ == "__main__"
