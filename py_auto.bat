@@ -48,10 +48,19 @@ setlocal
 			set /A LOOP_NUMBER=%LOOP_NUMBER%+1
 			goto VENV_LOOP
 		)
+	) else (
+		goto ERROR_LOOP
 	)
 	
 	:ERROR_PARENT
 	echo no ".venv" folder found in any parent directory, all the way up to %PARENT_DRIVE%  .
+	goto ERROR_OPTION
+	
+	:ERROR_LOOP
+	echo number of attempts to find a ".venv" exceeded the limit of %SAFETY_MAX_LOOPS%   .
+	goto ERROR_OPTION
+	
+	:ERROR_OPTION
 	echo continue using python at
 	echo:
 	echo %PATH_TO_PYTHON%

@@ -4,7 +4,7 @@ import os
 a script to blow up all the shit that clogs my temp/gds folder
 '''
 
-PATH_TO_TEMP_GDSF = r'C:\Users\miles.HYPERLIGHT\AppData\Local\Temp\gdsfactory'
+PATH_TO_TEMP_GDSF = r'C:\Users\miles\AppData\Local\Temp\gdsfactory'
 FILES_TO_DESTROY_PREFIXES = (
     "Unnamed",
     "remap",
