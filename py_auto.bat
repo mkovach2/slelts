@@ -83,7 +83,7 @@ setlocal
 		echo:
 		echo PATH_TO_PYTHON = %PATH_TO_PYTHON%
 		echo:
-		%PATH_TO_PYTHON% C:\Users\miles\Documents\_git_repos\slelts\obliterate_Unnamed.py
+		%PATH_TO_PYTHON% %FILE_TO_RUN%
 	)
 	
 	:EXIT_POINT
