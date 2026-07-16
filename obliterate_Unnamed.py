@@ -9,6 +9,8 @@ FILES_TO_DESTROY_PREFIXES = (
     "Unnamed",
     "remap",
     "boolean",
+    "merge",
+    "_merge",
 )
 
 if __name__ == "__main__":

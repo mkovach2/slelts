@@ -5,7 +5,10 @@ setlocal
     REM the python file specified as an inline variable or any of its 
     REM parent directories, this function will try to run it with the 
     REM python in that virtual environment.  otherwise, itll try to run it
-    REM with the python specified by _default_python
+    REM with the python specified by DEFAULT_PYTHON
+	
+	REM note that on windows youll have to add the folder containing py_auto.bat to the 
+	REM Path environment variable.
 	
 	set CURRENT_DIR=%cd%
 	set FILE_TO_RUN=%~f1
