@@ -1,6 +1,30 @@
 @echo off
 
+REM script to create a symbolic link more easily than the default windows method.
+REM if more than 2 args are specified, the script will look for
+    REM --from : to precede the file path to create a link for.
+    REM --to : to precede the file path of the new link.
+REM if exactly 2 args are specified, it will be assumed that the first one is the
+REM "--from" arg, and the second one is the "--to" arg.
+
+REM you may need to be admin for this script to work.
+
 setlocal
+    if "%1"=="--help" (
+        echo script to create a symbolic link more easily than the default windows method.
+        echo:
+        echo if more than 2 args are specified, the script will look for these flags:
+        echo     --from : to precede the file path to create a link for.
+        echo     --to : to precede the file path of the new link.
+        echo:
+        echo if exactly 2 args are specified, it will be assumed that the first one is the
+        echo "--from" arg, and the second one is the "--to" arg.
+        echo:
+        echo you may need to be admin for this script to work.
+        
+        goto end_marker
+    )
+
     if "%1"=="--test" (
         set TEST=1
         shift
