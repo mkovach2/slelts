@@ -1,5 +1,29 @@
 import os
-def create_init(folder_path, root_dir_name):
+
+def create_init(
+    folder_path,
+    root_dir_name,
+    safety_layers = 100,
+):
+    '''
+    root_dir_name should be the highest level in the module for which youre using
+    this function.  for example, if we wish to create an init for the folder:
+
+    C:/Users/miles/Documents/_git_repos/HyperLight-CAD/TX0157/tx0157/components/tx0149
+
+    which is in the project tx0157 (not TX0157), we enter
+
+    tx0157
+
+    as root_dir_name.  this way, import statements generated will all begin with
+    tx0157.components.tx0149.<file>
+
+    safety_layers is how many layers deep to search for
+    '''
+
+    if root_dir_name == '':
+        raise ValueError('create_init: no root directory given.')
+
     functions_dict = {}
 
     folder_path = os.path.abspath(folder_path)
@@ -7,12 +31,40 @@ def create_init(folder_path, root_dir_name):
 
     package_str = ''
     n = 0 # for safety
-    while os.path.basename(folder_path_temp) != root_dir_name and n < 10:
-        print(os.path.dirname(folder_path_temp))
+    while (
+        os.path.basename(folder_path_temp) != root_dir_name
+        and os.path.dirname(folder_path_temp) != folder_path_temp
+        and n < safety_layers
+    ):
+        print(f'{n}: {os.path.dirname(folder_path_temp)}')
         package_str = os.path.basename(folder_path_temp) + '.' + package_str
         folder_path_temp = os.path.dirname(folder_path_temp)
         n += 1
+
+    if os.path.dirname(folder_path_temp) == folder_path_temp:
+        fpt_error_str = (
+            f'root directory:\n{root_dir_name}\nnot found in path:\n'
+            + f'{folder_path}'
+        )
+        print(fpt_error_str)
+        return 1
+
     package_str = root_dir_name + '.' + package_str
+
+    if '__init__.py' in os.listdir(folder_path):
+        exists_warn = (
+            "\n" + "~" * 40 + "\n"
+            + "__init__.py already exsists in:\n"
+            + os.path.abspath(folder)
+            + "\noverwrite it? (y/N)_"
+        )
+        yslashn = input(exists_warn)
+    else:
+        yslashn = 'y'
+
+
+    if yslashn == 'n':
+        return 1
 
     for file in os.listdir(folder_path):
         if os.path.splitext(file)[-1] == '.py' and file != 'create_init.py':
@@ -52,21 +104,11 @@ if __name__ == "__main__":
     folder = input('what foldeur?\n_')
     rootname = input('what root_dir_name?\n_')
 
-    if '__init__.py' in os.listdir(folder):
-        exists_warn = (
-            "__init__.py already exsists in:\n"
-            + os.path.abspath(folder)
-            + "\noverwrite it? (y/N)_"
-        )
-        yslashn = input(exists_warn)
-    else:
-        yslashn = 'y'
-
-    if yslashn.lower() == 'y':
-        create_init(
-            folder_path=os.path.abspath(folder),
-            root_dir_name=rootname,
-        )
+    # if yslashn.lower() == 'y':
+    create_init(
+        folder_path=os.path.abspath(folder),
+        root_dir_name=rootname,
+    )
 
     input('done, slam that mf [enter] to be REAL done.')
 
